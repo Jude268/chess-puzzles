@@ -5,18 +5,19 @@ WORKDIR /app/server
 # Copy package files
 COPY server/package*.json ./
 
-# Install ALL dependencies (including devDependencies for TypeScript compilation)
-RUN npm install --legacy-peer-deps
+# Install dependencies with maximum compatibility
+RUN npm install --legacy-peer-deps --no-optional --prefer-offline
 
-# Copy source and build files
-COPY server/src ./src
+# Copy tsconfig BEFORE source (so TS can find it)
 COPY server/tsconfig.json ./
 
-# Compile TypeScript to JavaScript
+# Copy source code
+COPY server/src ./src
+
+# Build TypeScript
 RUN npm run build
 
-# Expose port
 EXPOSE 5000
 
-# Start the application
 CMD ["npm", "start"]
+
