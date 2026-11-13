@@ -5,10 +5,10 @@ WORKDIR /app/server
 # Copy package files
 COPY server/package*.json ./
 
-# Install dependencies with maximum compatibility
-RUN npm install --legacy-peer-deps --no-optional --prefer-offline
+# Install dependencies
+RUN npm install --legacy-peer-deps
 
-# Copy tsconfig BEFORE source (so TS can find it)
+# Copy tsconfig
 COPY server/tsconfig.json ./
 
 # Copy source code
@@ -20,4 +20,3 @@ RUN npm run build
 EXPOSE 5000
 
 CMD ["npm", "start"]
-
