@@ -2,12 +2,14 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy server files only
+# Copy server folder
 COPY server ./server
 
-# Install and build server
+# Install dependencies
 WORKDIR /app/server
 RUN npm install --legacy-peer-deps
+
+# Build with noEmit=false to output JS even with type errors
 RUN npm run build
 
 EXPOSE 5000
