@@ -16,9 +16,6 @@ COPY server/tsconfig.json ./
 # Build TypeScript
 RUN npm run build
 
-# Copy frontend build (if it exists)
-COPY client/build /app/server/dist/public 2>/dev/null || true
-
 WORKDIR /app/server
 
 EXPOSE 5000
