@@ -1,0 +1,10 @@
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+}
+
+.page-container main {
+  flex: 1;
+}
