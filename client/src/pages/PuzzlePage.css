@@ -1,0 +1,91 @@
+.puzzle-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+}
+
+.puzzle-header {
+  background: white;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+  padding: 30px 40px;
+  margin-bottom: 40px;
+  border-bottom: 3px solid #00a8e8;
+}
+
+.puzzle-header h1 {
+  margin: 0 0 20px 0;
+  color: #1a1a2e;
+  text-align: center;
+  font-size: 34px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #0f3460 0%, #00a8e8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 1px;
+}
+
+.puzzle-nav {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.puzzle-nav a,
+.puzzle-nav button {
+  padding: 12px 28px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  cursor: pointer;
+  background: linear-gradient(135deg, #f0f3f5 0%, #e9ecef 100%);
+  color: #333;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.puzzle-nav a:hover,
+.puzzle-nav button:hover {
+  background: linear-gradient(135deg, #0f3460 0%, #00a8e8 100%);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 168, 232, 0.25);
+}
+
+.puzzle-nav a:active,
+.puzzle-nav button:active {
+  transform: translateY(0);
+}
+
+main {
+  flex: 1;
+  padding: 0 20px 40px 20px;
+}
+
+@media (max-width: 768px) {
+  .puzzle-header {
+    padding: 25px 20px;
+    margin-bottom: 30px;
+  }
+
+  .puzzle-header h1 {
+    font-size: 28px;
+    margin-bottom: 15px;
+  }
+
+  .puzzle-nav {
+    gap: 10px;
+  }
+
+  .puzzle-nav a,
+  .puzzle-nav button {
+    padding: 10px 18px;
+    font-size: 12px;
+  }
+}
