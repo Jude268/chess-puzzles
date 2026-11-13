@@ -5,18 +5,14 @@ WORKDIR /app
 # Copy only package files first
 COPY server/package*.json ./server/
 
-# Install only production dependencies
+# Copy source code and tsconfig
+COPY server/src ./server/src
+COPY server/tsconfig.json ./server/
+
+# Install and build in server directory
 WORKDIR /app/server
 RUN npm ci --only=production
-
-# Copy source code
-COPY server/src ./src
-COPY server/tsconfig.json ./
-
-# Build TypeScript
 RUN npm run build
-
-WORKDIR /app/server
 
 EXPOSE 5000
 
