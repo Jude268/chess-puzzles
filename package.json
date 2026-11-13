@@ -1,43 +1,20 @@
 {
-  "name": "chess-puzzle-client",
+  "name": "chess-puzzle-platform",
   "version": "1.0.0",
-  "private": true,
-  "proxy": "http://localhost:3001",
-  "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.21.0",
-    "axios": "^1.6.2",
-    "chess.js": "^1.0.0-beta.8",
-    "chessboard.js": "^1.0.0-beta.8"
-  },
-  "devDependencies": {
-    "@types/react": "^18.2.45",
-    "@types/react-dom": "^18.2.18",
-    "react-scripts": "5.0.1",
-    "typescript": "^5.3.3"
-  },
+  "description": "Chess puzzle platform with AI insights and smart tracking",
+  "type": "module",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm start",
+    "build": "npm run build:server && npm run build:client",
+    "build:server": "cd server && npm run build",
+    "build:client": "cd client && npm run build",
+    "start": "cd server && npm start",
+    "setup": "npm install && cd server && npm install && cd ../client && npm install"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+  "workspaces": [
+    "server",
+    "client"
+  ]
 }
