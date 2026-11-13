@@ -2,14 +2,10 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy only package files first
-COPY server/package*.json ./server/
+# Copy everything
+COPY . .
 
-# Copy source code and tsconfig
-COPY server/src ./server/src
-COPY server/tsconfig.json ./server/
-
-# Install and build in server directory
+# Install and build
 WORKDIR /app/server
 RUN npm ci --only=production
 RUN npm run build
