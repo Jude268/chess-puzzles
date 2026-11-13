@@ -7,7 +7,7 @@ COPY . .
 
 # Install and build
 WORKDIR /app/server
-RUN npm ci --only=production
+RUN npm install
 RUN npm run build
 
 EXPOSE 5000
