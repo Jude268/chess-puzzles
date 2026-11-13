@@ -2,10 +2,10 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy everything
-COPY . .
+# Copy server files only
+COPY server ./server
 
-# Install and build
+# Install and build server
 WORKDIR /app/server
 RUN npm install --legacy-peer-deps
 RUN npm run build
