@@ -1,119 +1,2320 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-site-theme="crimson" data-board-theme="violet" data-piece-style="cburnett">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#111a24">
+  <meta name="theme-color" content="#080d1a">
   <title>Chess Puzzle Platform</title>
   <style>
     * { box-sizing: border-box; }
-    body { margin: 0; background: #111a24; color: #eef4f2; font-family: system-ui, sans-serif; line-height: 1.5; }
-    header { max-width: 1100px; margin: auto; padding: 28px 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
-    .brand { color: #eef4f2; font-size: 1.1rem; font-weight: 750; text-decoration: none; }
-    .brand span { color: #a7d493; }
-    header a:not(.brand) { color: #c4d2cc; font-size: .9rem; }
-    main { max-width: 1100px; margin: auto; padding: 32px 24px 80px; }
-    .intro { max-width: 670px; margin-bottom: 36px; }
-    .eyebrow { color: #a7d493; font-weight: 700; font-size: .78rem; letter-spacing: .13em; text-transform: uppercase; }
-    h1 { font-size: clamp(2.4rem, 7vw, 4.7rem); line-height: 1.05; letter-spacing: -.05em; margin: 12px 0 18px; }
-    .intro p, .muted { color: #b7c8c0; }
-    .layout { display: grid; grid-template-columns: minmax(0, 500px) minmax(250px, 1fr); gap: 28px; align-items: start; }
-    .board { display: grid; grid-template-columns: repeat(8, 1fr); aspect-ratio: 1; border: 8px solid #293d37; border-radius: 6px; overflow: hidden; }
-    .square { display: grid; place-items: center; font-family: "Segoe UI Symbol", "Arial Unicode MS", sans-serif; font-size: clamp(1.7rem, 6vw, 4rem); line-height: 1; }
-    .light { background: #dce7d3; }
-    .dark { background: #749d79; }
-    .white-piece { color: #fff; text-shadow: 0 1px 3px #111, 1px 0 2px #111, -1px 0 2px #111; }
-    .black-piece { color: #1a2420; }
-    .card { padding: 26px; border: 1px solid #344940; border-radius: 12px; background: #1b2b29; }
-    h2 { margin: 8px 0; font-size: 1.7rem; }
-    .choices { display: grid; gap: 10px; margin-top: 22px; }
-    button { border: 1px solid #4d6859; border-radius: 8px; padding: 13px 15px; color: #eef4f2; background: #263d34; font: inherit; text-align: left; cursor: pointer; }
-    button:hover, button:focus-visible { background: #365646; border-color: #a7d493; }
-    button:focus-visible { outline: 3px solid #a7d493; outline-offset: 2px; }
-    #feedback { min-height: 3em; margin-bottom: 0; font-weight: 600; }
-    .notice { margin-top: 26px; font-size: .9rem; }
-    footer { border-top: 1px solid #344940; padding: 22px 24px; color: #9db1a6; text-align: center; font-size: .85rem; }
-    @media (max-width: 700px) { .layout { grid-template-columns: 1fr; } main { padding-top: 15px; } .square { font-size: clamp(1.7rem, 9vw, 4rem); } }
+    html { scroll-behavior: smooth; }
+    :root { --board-light: #c4d6e0; --board-dark: #547491; --piece-white: #f7fdff; --piece-black: #101927; }
+    :root[data-board-theme="forest"] { --board-light: #e7edcc; --board-dark: #6b8c5c; --piece-white: #fffdf0; --piece-black: #18251a; }
+    :root[data-board-theme="wood"] { --board-light: #f0d9b5; --board-dark: #a87550; --piece-white: #fff9e8; --piece-black: #302018; }
+    :root[data-board-theme="violet"] { --board-light: #e2d9ed; --board-dark: #806b9a; --piece-white: #fffaff; --piece-black: #21172e; }
+    body { margin: 0; min-height: 100vh; background: radial-gradient(ellipse at 75% 4%, #202047 0, transparent 34%), radial-gradient(ellipse at 10% 45%, #0c2836 0, transparent 38%), #080d1a; color: #edf5ff; font-family: system-ui, sans-serif; line-height: 1.5; }
+    header { border-bottom: 1px solid #26314a; background: rgba(10, 15, 30, .88); }
+    .header-inner { max-width: 1320px; min-height: 72px; margin: auto; padding: 8px 32px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+    .brand { display: flex; align-items: center; gap: 12px; color: inherit; font-size: 1rem; font-weight: 800; letter-spacing: -.03em; text-decoration: none; }
+    .brand-icon { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid #65dcec; border-radius: 10px; background: linear-gradient(140deg, #193e56, #33235e); color: #b9f8ff; box-shadow: 0 0 20px #49d9ee30; font-size: 1.5rem; }
+    .brand small { display: block; color: #8c9db8; font-size: .6rem; font-weight: 700; letter-spacing: .14em; }
+    .header-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+    .header-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+    .header-button { width: auto; padding: 8px 12px; font-size: .8rem; }
+    .header-theme-status { margin: 0; color: #c8d6e8; font-size: .75rem; }
+    .header-theme-status:empty { display: none; }
+    main { max-width: 1440px; margin: auto; padding: 52px 32px 75px; }
+    .intro { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 35px; }
+    .eyebrow { color: #70e6f4; font-size: .7rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+    h1 { margin: 8px 0 8px; font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1.05; letter-spacing: -.055em; }
+    .intro p, .muted { color: #a7b6cb; }
+    .intro p { margin: 0; }
+    .preview-tag { flex: none; border: 1px solid #34516d; border-radius: 99px; padding: 8px 13px; color: #b5ddea; background: #132337; font-size: .73rem; font-weight: 700; }
+    .preview-tag::before { content: ''; display: inline-block; width: 7px; height: 7px; margin-right: 8px; border-radius: 50%; background: #70e6f4; box-shadow: 0 0 10px #70e6f4; }
+    .layout { display: grid; grid-template-columns: minmax(0, 840px) minmax(280px, 1fr); gap: 24px; align-items: start; }
+    .board-wrap, .card, .future { border: 1px solid #2a3952; border-radius: 16px; background: linear-gradient(145deg, #161f33, #101727); box-shadow: 0 18px 45px #02071155; }
+    .board-wrap { padding: 18px; box-shadow: 0 0 40px #43cbec12, 0 18px 45px #02071166; }
+    .board-top, .board-bottom { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .board-top { position: relative; z-index: 4; flex-wrap: wrap; padding: 1px 2px 15px; }
+    .board-top strong { font-size: .85rem; }
+    .board-top span, .board-bottom { color: #a7b6cb; font-size: .75rem; }
+    .board-heading { display: flex; align-items: center; gap: 8px; }
+    .board-settings summary { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--site-border, #34445d); border-radius: 7px; background: var(--site-control, #1b2940); color: #edf5ff; font-size: 1rem; line-height: 1; cursor: pointer; list-style: none; }
+    .board-settings summary::-webkit-details-marker { display: none; }
+    .board-settings summary:hover, .board-settings summary:focus-visible { background: var(--site-hover, #243650); outline: 2px solid var(--site-accent, #70e6f4); outline-offset: 2px; }
+    .board-settings-menu { position: absolute; z-index: 20; top: 100%; left: 0; width: 250px; max-width: 100%; padding: 14px; border: 1px solid var(--site-border, #34445d); border-radius: 10px; background: var(--site-card-alt, #101727); box-shadow: 0 12px 30px #020711aa; }
+    .board-settings-menu .board-theme-button { width: 100%; margin-top: 0; }
+    .board-settings-menu .board-theme-button + .board-theme-button { margin-top: 8px; }
+    .board-settings-menu .arrow-settings { margin: 12px 0 0; }
+    .board-bottom { flex-wrap: wrap; padding: 14px 2px 0; }
+    .turn-dot { display: inline-block; width: 9px; height: 9px; margin-right: 6px; border-radius: 50%; background: #b9f8ff; box-shadow: 0 0 9px #70e6f4; }
+    .board-area { position: relative; }
+    .board { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); grid-template-rows: repeat(8, minmax(0, 1fr)); aspect-ratio: 1; border: 1px solid #6f9db5; border-radius: 6px; overflow: hidden; }
+    .arrow-layer { position: absolute; inset: 1px; width: calc(100% - 2px); height: calc(100% - 2px); pointer-events: none; }
+    .square { position: relative; display: grid; width: auto; min-width: 0; min-height: 0; place-items: center; gap: 0; padding: 0; border: 0; border-radius: 0; font-family: "Segoe UI Symbol", "Arial Unicode MS", sans-serif; font-size: clamp(1.7rem, 6vw, 5.1rem); line-height: 1; transition: none; touch-action: none; user-select: none; }
+    .square.light { background: var(--board-light); }
+    .square.dark { background: var(--board-dark); }
+    .square:hover, .square:focus-visible { box-shadow: inset 0 0 0 3px #70e6f4; }
+    .square.selected { box-shadow: inset 0 0 0 4px #72f2f8; }
+    .square.hint { background: var(--hint-highlight, #80d9ee); }
+    .square.hint-target { background: var(--hint-target-highlight, #a9a7f2); }
+    .square.legal::after { content: ''; position: absolute; width: 20%; aspect-ratio: 1; border-radius: 50%; background: #203d54a8; pointer-events: none; }
+    .square:focus-visible { outline: 3px solid #45dceb; outline-offset: -3px; z-index: 1; }
+    .white-piece { color: var(--piece-white); text-shadow: 0 2px 3px #1c344b, 1px 0 2px #1c344b, -1px 0 2px #1c344b; }
+    .black-piece { color: var(--piece-black); text-shadow: 0 1px 1px #b8d3e2; }
+    .piece { display: inline-flex; align-items: center; justify-content: center; width: 1em; height: 1em; }
+    .piece-art { display: none; width: 1em; height: 1em; fill: currentColor; stroke-linejoin: round; }
+    .piece-asset { display: none; width: 1em; height: 1em; }
+    .piece.asset-ready .piece-symbol { display: none; }
+    .piece.asset-ready .piece-asset { display: block; }
+    :root[data-piece-style="modern"] .piece-symbol, :root[data-piece-style="outline"] .piece-symbol { display: none; }
+    :root[data-piece-style="modern"] .piece-art, :root[data-piece-style="outline"] .piece-art { display: block; }
+    :root[data-piece-style="modern"] .white-piece .piece-art { stroke: #1c344b; stroke-width: 1; }
+    :root[data-piece-style="modern"] .black-piece .piece-art { stroke: #b8d3e2; stroke-width: 1; }
+    :root[data-piece-style="outline"] .piece-art { fill: none; stroke: currentColor; stroke-width: 2.4; }
+    :root[data-piece-style="outline"] .white-piece .piece-art { filter: drop-shadow(0 1px 1px #1c344b); }
+    :root[data-piece-style="outline"] .black-piece .piece-art { filter: drop-shadow(0 1px 1px #eaf5ff); }
+    .square.drag-source .piece { visibility: hidden; }
+    .drag-piece { position: fixed; z-index: 10; pointer-events: none; transform: translate(-50%, -50%); line-height: 1; font-family: "Segoe UI Symbol", "Arial Unicode MS", sans-serif; }
+    .coordinate { position: absolute; font: 700 clamp(.55rem, 1vw, .7rem) system-ui, sans-serif; }
+    .rank { top: 5px; left: 6px; }
+    .file { right: 6px; bottom: 5px; }
+    .light .coordinate { color: #3d5d72; }
+    .dark .coordinate { color: #eff8ff; }
+    .side { display: grid; gap: 16px; }
+    .card { padding: 30px; }
+    .card-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .number { color: #90a3be; font-size: .75rem; font-weight: 700; }
+    h2 { margin: 24px 0 5px; font-size: 2rem; letter-spacing: -.045em; }
+    .card > .muted { margin: 0; font-size: .93rem; }
+    .streak { margin: 18px 0 0; color: #b9f8ff; font-size: .9rem; }
+    .sound-settings { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 16px 0 0; padding: 0; border: 0; color: #c8d6e8; font-size: .85rem; }
+    .sound-settings legend { margin-bottom: 5px; font-weight: 700; }
+    .sound-settings label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+    .sound-settings input { accent-color: #70e6f4; }
+    .sound-settings select { width: auto; padding: 5px 8px; }
+    .sound-settings .volume-control { flex-basis: 100%; }
+    .sound-status { margin: 6px 0 0; color: #a7b6cb; font-size: .8rem; }
+    .sound-status:empty { display: none; }
+    .move-label { margin: 28px 0 11px; color: #c8d6e8; font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .choices { display: grid; gap: 9px; }
+    button { display: flex; align-items: center; gap: 13px; width: 100%; border: 1px solid #34445d; border-radius: 9px; padding: 12px 14px; color: #edf5ff; background: #1b2940; font: inherit; text-align: left; cursor: pointer; transition: background .15s, border-color .15s, box-shadow .15s; }
+    .choice-letter { display: grid; place-items: center; width: 26px; height: 26px; border: 1px solid #526782; border-radius: 6px; color: #c5d6e9; font-size: .72rem; font-weight: 700; }
+    button:hover, button:focus-visible { background: #243650; border-color: #70e6f4; box-shadow: 0 0 18px #65dcec20; }
+    button:focus-visible { outline: 3px solid #70e6f4; outline-offset: 2px; }
+    #feedback { min-height: 3em; margin: 17px 0 0; color: #a9eff7; font-size: .9rem; font-weight: 600; }
+    .progress { border-top: 1px solid #2a3952; padding-top: 16px; font-size: .79rem !important; }
+    .future { padding: 19px 22px; }
+    .future strong { display: block; margin-bottom: 4px; font-size: .9rem; }
+    .future p { margin: 0; color: #a7b6cb; font-size: .8rem; }
+    .source-game .player-row { display: flex; justify-content: space-between; gap: 12px; margin: 8px 0; color: #a7b6cb; font-size: .85rem; }
+    .source-game .player-row strong { margin: 0; color: #edf5ff; text-align: right; overflow-wrap: anywhere; }
+    .source-game .game-link { display: inline-block; margin-top: 8px; font-size: .8rem; }
+    .source-game .game-link[hidden] { display: none; }
+    .community h3 { margin: 0 0 6px; font-size: 1rem; }
+    .community p { margin: 8px 0; color: #a7b6cb; font-size: .8rem; }
+    .community [hidden] { display: none !important; }
+    .community-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+    .community-actions button, .community .comment-delete { width: auto; padding: 8px 11px; font-size: .8rem; }
+    .community button:disabled { opacity: .6; cursor: not-allowed; }
+    .community form { display: grid; gap: 8px; margin-top: 12px; }
+    .community label { color: #c8d6e8; font-size: .8rem; }
+    .community input, .community textarea { width: 100%; padding: 10px; border: 1px solid #526782; border-radius: 9px; color: #edf5ff; background: #1b2940; font: inherit; }
+    .community textarea { min-height: 80px; resize: vertical; }
+    .community input:focus-visible, .community textarea:focus-visible { outline: 3px solid #70e6f4; outline-offset: 2px; }
+    .community-comments { margin: 12px 0; padding: 0; list-style: none; }
+    .community-comments li { padding: 10px 0; border-top: 1px solid var(--site-border, #34445d); overflow-wrap: anywhere; }
+    .community-comments strong { display: inline; font-size: .85rem; }
+    .community-comments time { margin-left: 8px; color: #a7b6cb; font-size: .72rem; }
+    .community-comments p { white-space: pre-wrap; }
+    .reason-form { margin-top: 16px; border-top: 1px solid #2a3952; padding-top: 16px; }
+    .reason-form[hidden] { display: none; }
+    .reason-form label { display: block; margin-bottom: 8px; color: #c8d6e8; font-size: .85rem; font-weight: 700; }
+    select, #minimum-rating { width: 100%; border: 1px solid #526782; border-radius: 9px; padding: 12px; color: #edf5ff; background: #1b2940; font: inherit; }
+    select:focus-visible, #minimum-rating:focus-visible { outline: 3px solid #70e6f4; outline-offset: 2px; }
+    .reason-form button { justify-content: center; margin-top: 10px; border-color: #70e6f4; color: #b9f8ff; font-weight: 700; }
+    .failure-analysis { margin-top: 16px; border: 1px solid var(--site-border, #34445d); border-radius: 12px; padding: 14px; background: var(--site-card-alt, #131d2e); }
+    .failure-analysis[hidden] { display: none; }
+    .failure-analysis h3 { margin: 0 0 6px; font-size: .95rem; }
+    .failure-analysis p { margin: 0; color: #a7b6cb; font-size: .78rem; line-height: 1.4; }
+    .failure-analysis ol { margin: 12px 0 0; padding: 0; list-style: none; }
+    .failure-analysis li + li { margin-top: 10px; }
+    .failure-analysis .failure-score { display: flex; justify-content: space-between; gap: 12px; font-size: .85rem; }
+    .failure-analysis .failure-score strong { color: var(--site-accent, #70e6f4); }
+    .failure-analysis .failure-clue { margin-top: 3px; }
+    .stats { margin-top: 28px; }
+    .section-heading { margin: 8px 0 16px; font-size: 1.7rem; letter-spacing: -.04em; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .stat, .reason-summary, .history { border: 1px solid #2a3952; border-radius: 14px; padding: 20px; background: #131d2e; }
+    .stat span { display: block; color: #a7b6cb; font-size: .8rem; }
+    .stat strong { display: block; margin-top: 4px; color: #edf5ff; font-size: 1.7rem; }
+    .stat small { display: block; color: #a7b6cb; font-size: .72rem; }
+    .reason-summary { margin-top: 12px; }
+    .reason-summary h3 { margin: 0 0 5px; font-size: 1rem; }
+    .reason-summary p, .reason-summary ul { margin: 0; color: #a7b6cb; font-size: .85rem; }
+    .reason-summary ul { padding-left: 20px; }
+    .history { margin-top: 12px; }
+    .history h3 { margin: 0 0 5px; font-size: 1rem; }
+    .history p { margin: 0; color: #a7b6cb; font-size: .85rem; }
+    .history-list { max-height: 320px; overflow-y: auto; margin: 12px 0 0; padding: 0; list-style: none; }
+    .history-list:empty { display: none; }
+    .history-list > li { padding: 9px 0; border-top: 1px solid #2a3952; overflow-wrap: anywhere; font-size: .85rem; }
+    .history-list summary { cursor: pointer; color: var(--site-accent, #70e6f4); font-weight: 600; }
+    .history-list .source-link { display: inline-block; margin-top: 10px; }
+    .training-insights h3:not(:first-child) { margin-top: 20px; }
+    .training-insights ul { margin: 10px 0 0; padding: 0; list-style: none; }
+    .training-insights li + li { margin-top: 8px; }
+    .training-insights button { justify-content: space-between; font-size: .85rem; }
+    .training-insights details { margin-top: 14px; color: #a7b6cb; font-size: .85rem; }
+    .training-insights summary { cursor: pointer; color: var(--site-accent, #70e6f4); }
+    .rating-chart { display: block; width: 100%; max-height: 260px; margin-top: 12px; border-radius: 12px; background: radial-gradient(ellipse at 50% 30%, #26375680, transparent 70%), #0b1425; color: var(--site-accent, #70e6f4); }
+    .rating-chart[hidden] { display: none; }
+    .rating-chart text { fill: #a7b6cb; font: 12px system-ui, sans-serif; }
+    .rating-chart .grid-line { stroke: #526782; stroke-width: 1; opacity: .5; }
+    .rating-chart .rating-line { fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; opacity: .85; }
+    .rating-chart .rating-dot { fill: currentColor; stroke: #fff; stroke-width: .8; filter: drop-shadow(0 0 4px currentColor); }
+    .rating-chart-dates { display: flex; justify-content: space-between; gap: 12px; margin-top: 4px; color: #a7b6cb; font-size: .75rem; }
+    .rating-chart-dates[hidden] { display: none; }
+    .rating-view { display: flex; flex-direction: column; justify-content: center; min-height: calc(100vh - 270px); max-width: 1360px; margin: 0 auto; }
+    .rating-view[hidden] { display: none; }
+    .rating-view .history { padding: clamp(20px, 3vw, 36px); }
+    .rating-view .rating-chart { max-height: none; }
+    .rating-view-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+    .rating-view-score { color: #a7b6cb; }
+    .rating-view-score strong { color: #edf5ff; font-size: 1.5rem; }
+    .back-to-puzzles { width: auto; }
+    .category-progress { margin: 8px 0 0; color: #b9f8ff; font-size: .85rem; }
+    .category-progress-note { margin: 4px 0 0; color: #a7b6cb; font-size: .75rem; }
+    .board:empty, .board.unavailable { background: #17243a; }
+    .board-message { grid-area: 1 / 1 / -1 / -1; align-self: center; padding: 20px; color: #a7b6cb; font-size: .9rem; text-align: center; }
+    .controls label { display: block; margin-bottom: 8px; color: #c8d6e8; font-size: .85rem; font-weight: 700; }
+    .controls button { justify-content: center; margin-top: 12px; border-color: #70e6f4; color: #b9f8ff; font-weight: 700; }
+    button:disabled, select:disabled { opacity: .6; cursor: not-allowed; }
+    .promotion { position: absolute; z-index: 3; top: 1px; bottom: 50%; left: 0; width: 12.5%; display: grid; grid-template-rows: repeat(4, 1fr); border: 2px solid #70e6f4; border-radius: 5px; background: #243650; box-shadow: 0 5px 20px #020711aa; overflow: hidden; }
+    .promotion[hidden] { display: none; }
+    .promotion button { display: grid; place-items: center; min-height: 0; padding: 0; border: 0; border-radius: 0; background: #547491; font-family: "Segoe UI Symbol", "Arial Unicode MS", sans-serif; font-size: clamp(1.7rem, 6vw, 5.1rem); line-height: 1; }
+    .promotion button:hover, .promotion button:focus-visible { background: #3a617c; box-shadow: inset 0 0 0 3px #70e6f4; outline-offset: -3px; }
+    .cancel-promotion { width: auto; margin-top: 10px; padding: 7px 10px; font-size: .8rem; }
+    .cancel-promotion[hidden] { display: none; }
+    .board-theme-button { width: auto; margin-top: 12px; padding: 7px 10px; font-size: .8rem; }
+    .board-theme-status { margin: 6px 0 0; color: #a7b6cb; font-size: .8rem; }
+    .board-theme-status:empty { display: none; }
+    .arrow-settings { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; color: #c8d6e8; font-size: .8rem; }
+    .arrow-settings label { display: flex; align-items: center; gap: 8px; }
+    .arrow-settings input { width: 42px; height: 32px; padding: 2px; border: 1px solid #526782; border-radius: 5px; background: #1b2940; cursor: pointer; }
+    .theme-list { color: #a7b6cb; font-size: .8rem; }
+    .source-link { color: #93eaf4; }
+    footer { border-top: 1px solid #26314a; padding: 22px 32px; color: #92a4bc; text-align: center; font-size: .8rem; }
+    :root[data-site-theme="forest"] { --site-bg: #0b1713; --site-glow: #173c2a; --site-glow-alt: #162f32; --site-header: #0d1b16; --site-card: #172a21; --site-card-alt: #102019; --site-border: #355747; --site-control: #253e31; --site-hover: #345744; --site-accent: #a6e6ba; }
+    :root[data-site-theme="plum"] { --site-bg: #181020; --site-glow: #4a2854; --site-glow-alt: #30244a; --site-header: #1b1225; --site-card: #302039; --site-card-alt: #211729; --site-border: #674a70; --site-control: #46304e; --site-hover: #614169; --site-accent: #f0c5f6; }
+    :root[data-site-theme="ember"] { --site-bg: #1a110e; --site-glow: #513020; --site-glow-alt: #3a2024; --site-header: #211510; --site-card: #37241c; --site-card-alt: #281a15; --site-border: #6a4937; --site-control: #4b3024; --site-hover: #684332; --site-accent: #ffd1a3; }
+    :root[data-site-theme="crimson"] { --site-bg: #190b10; --site-glow: #67172a; --site-glow-alt: #3d1023; --site-header: #200d13; --site-card: #391821; --site-card-alt: #250f17; --site-border: #74404c; --site-control: #4b222c; --site-hover: #6a303e; --site-accent: #ffb1ba; }
+    :root[data-site-theme="forest"] { --hint-highlight: #d9e78a; --hint-target-highlight: #79d6ae; }
+    :root[data-site-theme="plum"] { --hint-highlight: #de9eec; --hint-target-highlight: #a8c1f5; }
+    :root[data-site-theme="ember"] { --hint-highlight: #f6bc75; --hint-target-highlight: #ed937e; }
+    :root[data-site-theme="crimson"] { --hint-highlight: #ff8c9d; --hint-target-highlight: #e5a0d4; }
+    :root[data-site-theme]:not([data-site-theme="midnight"]) body { background: radial-gradient(ellipse at 75% 4%, var(--site-glow) 0, transparent 34%), radial-gradient(ellipse at 10% 45%, var(--site-glow-alt) 0, transparent 38%), var(--site-bg); }
+    :root[data-site-theme]:not([data-site-theme="midnight"]) header { background: var(--site-header); border-color: var(--site-border); }
+    :root[data-site-theme]:not([data-site-theme="midnight"]) .board-wrap, :root[data-site-theme]:not([data-site-theme="midnight"]) .card, :root[data-site-theme]:not([data-site-theme="midnight"]) .future { background: linear-gradient(145deg, var(--site-card), var(--site-card-alt)); border-color: var(--site-border); }
+    :root[data-site-theme]:not([data-site-theme="midnight"]) .stat, :root[data-site-theme]:not([data-site-theme="midnight"]) .reason-summary, :root[data-site-theme]:not([data-site-theme="midnight"]) .history { background: var(--site-card-alt); border-color: var(--site-border); }
+    :root[data-site-theme]:not([data-site-theme="midnight"]) button:not(.square):not([data-promotion]), :root[data-site-theme]:not([data-site-theme="midnight"]) select, :root[data-site-theme]:not([data-site-theme="midnight"]) #minimum-rating, :root[data-site-theme]:not([data-site-theme="midnight"]) #arrow-color, :root[data-site-theme]:not([data-site-theme="midnight"]) .preview-tag { background: var(--site-control); border-color: var(--site-border); }
+    :root[data-site-theme]:not([data-site-theme="midnight"]) button:not(.square):not([data-promotion]):hover, :root[data-site-theme]:not([data-site-theme="midnight"]) button:not(.square):not([data-promotion]):focus-visible { background: var(--site-hover); }
+    :root[data-site-theme]:not([data-site-theme="midnight"]) .eyebrow, :root[data-site-theme]:not([data-site-theme="midnight"]) .streak, :root[data-site-theme]:not([data-site-theme="midnight"]) .category-progress, :root[data-site-theme]:not([data-site-theme="midnight"]) .source-link, :root[data-site-theme]:not([data-site-theme="midnight"]) #feedback, :root[data-site-theme]:not([data-site-theme="midnight"]) .controls button { color: var(--site-accent); }
+    :root[data-site-theme]:not([data-site-theme="midnight"]) .brand-icon { background: var(--site-control); border-color: var(--site-accent); color: var(--site-accent); }
+    :root[data-site-theme="crimson"] .rating-chart { background: radial-gradient(ellipse at 50% 30%, #70273a80, transparent 70%), #1a0b12; }
+    @media (max-width: 800px) { .layout { grid-template-columns: 1fr; } .board-wrap { max-width: 700px; } .square, .promotion button { font-size: clamp(1.8rem, 9vw, 4.5rem); } }
+    @media (max-width: 500px) { .header-inner { min-height: 64px; padding: 0 18px; } main { padding: 36px 16px 55px; } .intro { align-items: start; flex-direction: column; gap: 16px; } .board-wrap { padding: 12px; } .card { padding: 23px; } .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   </style>
 </head>
 <body>
   <header>
-    <a class="brand" href="./"><span>♞</span> Chess Puzzles</a>
-    <a href="#puzzle">Try a puzzle</a>
+    <div class="header-inner">
+      <a class="brand" href="./"><span class="brand-icon" aria-hidden="true">♞</span><span>CHESS PUZZLES<small>TRAIN YOUR THINKING</small></span></a>
+      <div class="header-actions">
+        <div class="header-buttons">
+          <button type="button" id="header-rating" class="header-button" aria-label="Puzzle rating: 0. View rating history" aria-controls="rating-view" aria-expanded="false">Rating: 0</button>
+          <button type="button" id="site-theme-button" class="header-button">Website: Crimson</button>
+        </div>
+        <p id="site-theme-status" class="header-theme-status" role="status"></p>
+      </div>
+    </div>
   </header>
   <main>
+    <div id="practice-view">
     <section class="intro">
-      <div class="eyebrow">Think. Move. Improve.</div>
-      <h1>A better move starts here.</h1>
-      <p>Sharpen your chess with a quick puzzle. More puzzles, progress tracking and decision-making insights are planned for the future.</p>
+      <div>
+        <div class="eyebrow">Your training starts here</div>
+        <h1>Find the move.</h1>
+        <p>Take your time. Look closer. Make it count.</p>
+      </div>
+      <div class="preview-tag">Practice preview</div>
     </section>
     <section class="layout" id="puzzle" aria-labelledby="puzzle-title">
-      <div class="board" id="board" role="img" aria-label="Chess position: black king on h8; white king on f6; white queen on g6. White to move."></div>
-      <div class="card">
-        <div class="eyebrow">Practice puzzle · White to move</div>
-        <h2 id="puzzle-title">Mate in one</h2>
-        <p class="muted">Find the move that checkmates Black. Choose an answer below.</p>
-        <div class="choices" aria-label="Choose your move">
-          <button type="button" data-answer="wrong">Queen to f7</button>
-          <button type="button" data-answer="correct">Queen to g7</button>
-          <button type="button" data-answer="wrong">Queen to h6</button>
+      <div class="board-wrap">
+        <div class="board-top">
+          <div class="board-heading">
+            <strong>THE POSITION</strong>
+            <details class="board-settings" id="board-settings">
+              <summary aria-label="Board settings" title="Board settings">⚙</summary>
+              <div class="board-settings-menu">
+                <button type="button" id="board-theme-button" class="board-theme-button">Board theme: Violet</button>
+                <button type="button" id="piece-style-button" class="board-theme-button">Piece style: Tournament</button>
+                <div class="arrow-settings"><label for="arrow-color">Arrow colour <input type="color" id="arrow-color" value="#e53935"></label></div>
+                <p class="board-theme-status">Traditional sets: <a class="source-link" href="https://github.com/lichess-org/lila/blob/27c7f8d9fb1a04a2d8a23d8c3378a15e21ee9a54/COPYING.md" target="_blank" rel="noopener noreferrer">artists and licenses</a>.</p>
+              </div>
+            </details>
+          </div>
+          <span id="puzzle-number">Loading puzzle</span>
         </div>
-        <p id="feedback" role="status" aria-live="polite"></p>
-        <p id="progress" class="muted notice"></p>
-        <p class="muted notice">This is an early preview. Accounts, online progress and AI analysis are not available yet.</p>
+        <div class="board-area">
+          <div class="board" id="board" aria-label="Chess board"></div>
+          <svg id="arrow-layer" class="arrow-layer" viewBox="0 0 8 8" aria-hidden="true"></svg>
+          <div id="promotion" class="promotion" role="group" aria-label="Choose promotion piece" hidden>
+            <button type="button" data-promotion="q" aria-label="Promote to queen"></button>
+            <button type="button" data-promotion="r" aria-label="Promote to rook"></button>
+            <button type="button" data-promotion="b" aria-label="Promote to bishop"></button>
+            <button type="button" data-promotion="n" aria-label="Promote to knight"></button>
+          </div>
+        </div>
+        <div class="board-bottom"><span><span class="turn-dot"></span> <span id="turn">Loading</span></span><span id="puzzle-rating"></span><span id="puzzle-time" role="timer">Time: —</span></div>
+        <p id="arrow-color-status" class="board-theme-status" role="status"></p>
+        <p id="board-theme-status" class="board-theme-status" role="status"></p>
+        <p id="piece-style-status" class="board-theme-status" role="status"></p>
+        <button type="button" id="cancel-promotion" class="cancel-promotion" hidden>Cancel promotion</button>
+      </div>
+      <div class="side">
+        <div class="card">
+          <div class="card-heading"><div class="eyebrow">Tactics training</div><span class="number">LICHESS PUZZLES</span></div>
+          <h2 id="puzzle-title">Find the move.</h2>
+          <p class="muted">Drag a piece to its destination, or click a piece and then its destination. Follow the full sequence to solve the puzzle.</p>
+          <p class="streak" aria-live="polite">Perfect streak: <strong id="streak-count">0</strong> puzzles in a row</p>
+          <p class="streak">Your puzzle rating: <strong id="current-rating">0</strong></p>
+          <p class="category-progress-note">Only your first attempt is rated. Rating changes depend on puzzle difficulty.</p>
+          <p id="rating-change" class="theme-list" role="status"></p>
+          <p id="puzzle-session-status" class="theme-list" role="status"></p>
+          <fieldset class="sound-settings">
+            <legend>Sounds</legend>
+            <label><input id="result-sounds" type="checkbox" checked> Correct and incorrect</label>
+            <label for="move-sounds">Piece moves
+              <select id="move-sounds">
+                <option value="off">Off</option>
+                <option value="tap">Low tap</option>
+                <option value="chime">Chime</option>
+                <option value="digital">Digital</option>
+              </select>
+            </label>
+            <label for="sound-volume" class="volume-control">Volume
+              <input id="sound-volume" type="range" min="0" max="100" step="1" value="100">
+              <output id="sound-volume-value" for="sound-volume">100%</output>
+            </label>
+          </fieldset>
+          <p id="sound-status" class="sound-status" role="status"></p>
+          <div class="controls">
+            <label for="theme" class="move-label">Puzzle category</label>
+            <select id="theme"><option value="">All themes</option></select>
+            <p id="category-progress-status" class="category-progress" role="status">Loading category totals...</p>
+            <p class="category-progress-note">Unique puzzles solved in this catalog. Older solves without category data are not included.</p>
+            <label for="minimum-rating" class="move-label">Minimum puzzle rating</label>
+            <input id="minimum-rating" type="number" min="0" step="1" value="2200" placeholder="Any rating" disabled>
+            <button id="apply-rating" type="button" disabled>Apply minimum rating</button>
+            <button id="hint" type="button" aria-label="Hint: click once for the piece, double-click for the next move, triple-click to clear. Keyboard: activate again to reveal or clear." disabled>Hint</button>
+            <button id="next-puzzle" type="button" disabled>Loading puzzle...</button>
+          </div>
+          <p id="theme-status" class="theme-list" role="status"></p>
+          <p id="theme-error" class="theme-list" role="status"></p>
+          <p id="feedback" role="status" aria-live="polite"></p>
+          <section id="failure-analysis" class="failure-analysis" aria-labelledby="failure-analysis-title" hidden>
+            <h3 id="failure-analysis-title">Possible reasons</h3>
+            <p>Relative rule-based scores for this attempt, not probabilities or a diagnosis. The site cannot know what you were thinking.</p>
+            <ol id="failure-analysis-list"></ol>
+          </section>
+          <form id="reason-form" class="reason-form" hidden>
+            <label for="reason">What do you think went wrong? (optional)</label>
+            <select id="reason" required>
+              <option value="">Choose a reason</option>
+              <option value="Missed a check">Missed a check</option>
+              <option value="Overlooked an escape square">Overlooked an escape square</option>
+              <option value="Overlooked the opponent's response">Overlooked the opponent's response</option>
+              <option value="Didn't consider other moves">Didn't consider other moves</option>
+              <option value="Moved too quickly">Moved too quickly</option>
+              <option value="Something else">Something else</option>
+            </select>
+            <button type="submit">Save reason</button>
+          </form>
+          <p id="progress" class="muted progress"></p>
+        </div>
+        <div class="future source-game" id="source-game" hidden>
+          <strong>Source game</strong>
+          <p id="source-game-description">Lichess usernames and ratings from the game.</p>
+          <div class="player-row"><span>White</span><strong id="white-player"></strong></div>
+          <div class="player-row"><span>Black</span><strong id="black-player"></strong></div>
+          <a class="source-link game-link" id="game-link" target="_blank" rel="noopener noreferrer" hidden>View game on Lichess ↗</a>
+          <p id="missing-game-link" hidden>Game link unavailable.</p>
+        </div>
+        <section class="future community" aria-labelledby="community-title">
+          <h3 id="community-title">Puzzle discussion</h3>
+          <p>Likes and comments are public. Sign in with Google to participate.</p>
+          <div class="community-actions">
+            <button type="button" id="community-like" disabled>Like · —</button>
+            <div id="community-google"></div>
+            <button type="button" id="community-signout" hidden>Sign out</button>
+          </div>
+          <p id="community-auth-status"></p>
+          <p id="community-status" role="status"></p>
+          <button type="button" id="community-retry" hidden>Retry loading discussion</button>
+          <form id="community-form" hidden>
+            <label for="community-name">Public display name</label>
+            <input id="community-name" maxlength="30" autocomplete="nickname" required>
+            <label for="community-text">Comment</label>
+            <textarea id="community-text" maxlength="500" required></textarea>
+            <button type="submit">Post comment</button>
+          </form>
+          <ul class="community-comments" id="community-comments"></ul>
+          <button type="button" id="community-more" hidden>Load more comments</button>
+        </section>
+        <div class="future">
+          <strong>Powered by Lichess.</strong>
+          <p id="puzzle-source-description">Puzzles are fetched from Lichess on demand. Puzzle numbers are derived from Lichess IDs and are not sequential. This is not a complete searchable database. Stats stay in this browser.</p>
+          <p><a class="source-link" href="https://database.lichess.org/#puzzles" target="_blank" rel="noopener noreferrer">About the Lichess puzzle database</a></p>
+        </div>
       </div>
     </section>
+    <section class="stats" aria-labelledby="stats-title">
+      <div class="eyebrow">Your practice</div>
+      <h2 class="section-heading" id="stats-title">Player stats</h2>
+      <div class="stats-grid">
+        <div class="stat"><span>Your puzzle rating</span><strong id="player-rating">0</strong><small>Saved in this browser</small></div>
+        <div class="stat"><span>Answers tried</span><strong id="answer-count">0</strong><small>Includes earlier preview choices</small></div>
+        <div class="stat"><span>Wrong answers</span><strong id="wrong-count">0</strong><small>Includes retries and preview</small></div>
+        <div class="stat"><span>Puzzles solved</span><strong id="solved-count">0</strong><small>Unique Lichess puzzles</small></div>
+      </div>
+      <div id="rating-chart-home">
+      <section class="history" id="rating-history" aria-labelledby="rating-history-title">
+        <h3 id="rating-history-title" tabindex="-1">Puzzle rating history</h3>
+        <p id="rating-history-summary">Your rating graph will appear after your first rating change.</p>
+        <svg id="rating-chart" class="rating-chart" viewBox="0 0 600 200" role="img" aria-labelledby="rating-history-title rating-history-summary" hidden></svg>
+        <div id="rating-chart-dates" class="rating-chart-dates" aria-hidden="true" hidden><span id="rating-chart-start"></span><span id="rating-chart-end"></span></div>
+      </section>
+      </div>
+      <div class="history">
+        <h3>Solved puzzle history</h3>
+        <p id="history-note">Saved in this browser on this device. Select a puzzle to see its analysis.</p>
+        <p id="empty-history">No puzzles solved yet.</p>
+        <ul class="history-list" id="history-list"></ul>
+      </div>
+      <section class="history training-insights" aria-labelledby="training-insights-title">
+        <h3 id="training-insights-title">What to practise</h3>
+        <p>Based on new results in this browser, counting each puzzle once. Puzzles can belong to multiple themes. Recommendations need at least 3 recorded puzzles and one miss in a theme.</p>
+        <p id="training-recommendations-empty">No recommendations yet. Keep practising to build your results.</p>
+        <ul id="training-recommendations"></ul>
+        <details>
+          <summary>All theme results</summary>
+          <p id="training-themes-empty">No puzzle themes recorded yet.</p>
+          <ul id="training-themes"></ul>
+        </details>
+        <h3>Estimated thinking patterns</h3>
+        <p>The highest-scored rule-based guess for each failed puzzle, not a diagnosis. Percentages show how often each guess ranked first.</p>
+        <p id="training-reasons-empty">No failed puzzles recorded yet.</p>
+        <ul id="training-reasons"></ul>
+      </section>
+      <div class="reason-summary">
+        <h3>Your recorded reasons</h3>
+        <p id="empty-reasons">No reasons recorded yet. You can add one after a wrong answer.</p>
+        <ul id="reason-list"></ul>
+      </div>
+    </section>
+    </div>
+    <section id="rating-view" class="rating-view" aria-label="Puzzle rating" hidden>
+      <div class="rating-view-toolbar">
+        <button type="button" id="back-to-puzzles" class="back-to-puzzles">Back to puzzles</button>
+        <div class="rating-view-score">Your puzzle rating <strong id="expanded-rating">0</strong></div>
+      </div>
+      <div id="rating-chart-expanded"></div>
+    </section>
   </main>
-  <footer>Chess Puzzles · A place to practice and improve</footer>
-  <script>
+  <footer>Chess Puzzles · One position at a time</footer>
+  <script type="module">
     const board = document.getElementById('board');
+    const boardSettings = document.getElementById('board-settings');
+    document.addEventListener('pointerdown', event => {
+      if (boardSettings.open && !boardSettings.contains(event.target)) boardSettings.open = false;
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && boardSettings.open && boardSettings.contains(document.activeElement)) {
+        event.preventDefault();
+        boardSettings.open = false;
+        boardSettings.querySelector('summary').focus();
+      }
+    });
+    const arrowLayer = document.getElementById('arrow-layer');
+    const arrowColor = document.getElementById('arrow-color');
+    const arrowColorStatus = document.getElementById('arrow-color-status');
+    const arrowColorKey = 'chess-puzzles-arrow-color';
     const feedback = document.getElementById('feedback');
     const progress = document.getElementById('progress');
-    const pieces = { h8: ['♚', 'black-piece'], f6: ['♔', 'white-piece'], g6: ['♕', 'white-piece'] };
-    const storageKey = 'chess-puzzles-preview-solved';
+    const failureAnalysis = document.getElementById('failure-analysis');
+    const failureAnalysisList = document.getElementById('failure-analysis-list');
+    const puzzleSessionStatus = document.getElementById('puzzle-session-status');
+    const reasonForm = document.getElementById('reason-form');
+    const reasonSelect = document.getElementById('reason');
+    const answerCount = document.getElementById('answer-count');
+    const wrongCount = document.getElementById('wrong-count');
+    const solvedCount = document.getElementById('solved-count');
+    const streakCount = document.getElementById('streak-count');
+    const currentRating = document.getElementById('current-rating');
+    const headerRating = document.getElementById('header-rating');
+    const playerRating = document.getElementById('player-rating');
+    const expandedRating = document.getElementById('expanded-rating');
+    const ratingChange = document.getElementById('rating-change');
+    const ratingChart = document.getElementById('rating-chart');
+    const ratingChartDates = document.getElementById('rating-chart-dates');
+    const ratingHistorySummary = document.getElementById('rating-history-summary');
+    const ratingHistory = document.getElementById('rating-history');
+    const practiceView = document.getElementById('practice-view');
+    const ratingView = document.getElementById('rating-view');
+    function showRatingView(show) {
+      document.getElementById(show ? 'rating-chart-expanded' : 'rating-chart-home').appendChild(ratingHistory);
+      practiceView.hidden = show;
+      ratingView.hidden = !show;
+      headerRating.setAttribute('aria-expanded', String(show));
+      (show ? document.getElementById('rating-history-title') : headerRating).focus();
+    }
+    headerRating.addEventListener('click', () => showRatingView(ratingView.hidden));
+    document.getElementById('back-to-puzzles').addEventListener('click', () => showRatingView(false));
+    const historyList = document.getElementById('history-list');
+    const emptyHistory = document.getElementById('empty-history');
+    const historyNote = document.getElementById('history-note');
+    const trainingRecommendations = document.getElementById('training-recommendations');
+    const trainingRecommendationsEmpty = document.getElementById('training-recommendations-empty');
+    const trainingThemes = document.getElementById('training-themes');
+    const trainingThemesEmpty = document.getElementById('training-themes-empty');
+    const trainingReasons = document.getElementById('training-reasons');
+    const trainingReasonsEmpty = document.getElementById('training-reasons-empty');
+    const categoryProgressStatus = document.getElementById('category-progress-status');
+    const reasonList = document.getElementById('reason-list');
+    const emptyReasons = document.getElementById('empty-reasons');
+    const themeSelect = document.getElementById('theme');
+    const minimumRating = document.getElementById('minimum-rating');
+    const applyRating = document.getElementById('apply-rating');
+    const themeStatus = document.getElementById('theme-status');
+    const nextButton = document.getElementById('next-puzzle');
+    const hintButton = document.getElementById('hint');
+    const puzzleTime = document.getElementById('puzzle-time');
+    const promotion = document.getElementById('promotion');
+    const cancelPromotion = document.getElementById('cancel-promotion');
+    const sourceGame = document.getElementById('source-game');
+    const pieces = { wk: '♔', wq: '♕', wr: '♖', wb: '♗', wn: '♘', wp: '♙', bk: '♚', bq: '♛', br: '♜', bb: '♝', bn: '♞', bp: '♟' };
+    const pieceShapes = {
+      k: 'M22 4h4v5h5v4h-5v5c8 2 10 8 6 14l-2 4H18l-2-4c-4-6-2-12 6-14v-5h-5V9h5z M16 38h16l3 5H13z',
+      q: 'M9 15l7 7 3-10 5 9 5-9 3 10 7-7-4 18H13z M14 36h20l2 7H12z',
+      r: 'M11 8h6v5h4V8h6v5h4V8h6v11l-4 4v13l3 7H12l3-7V23l-4-4z',
+      b: 'M24 5c8 6 10 12 6 17l-3 3 5 10H16l5-10-3-3C14 17 16 11 24 5z M15 38h18l3 5H12z',
+      n: 'M13 40l4-9 1-8-5 3-3-3 4-9 8-7 12 4 3 12-3 9 3 8z M11 43h28v2H11z',
+      p: 'M24 7a7 7 0 1 1 0 14 7 7 0 0 1 0-14z M21 22h6l2 11 4 5H15l4-5z M13 40h22v4H13z'
+    };
+    const pieceNames = { k: 'king', q: 'queen', r: 'rook', b: 'bishop', n: 'knight', p: 'pawn' };
+    const storageKey = 'chess-puzzles-preview-stats';
+    const puzzleSessionKey = 'chess-puzzles-current-puzzle';
+    const boardThemeKey = 'chess-puzzles-board-theme';
+    const siteThemeKey = 'chess-puzzles-site-theme';
+    const siteThemes = [
+      { id: 'midnight', name: 'Midnight' },
+      { id: 'forest', name: 'Forest' },
+      { id: 'plum', name: 'Plum' },
+      { id: 'ember', name: 'Ember' },
+      { id: 'crimson', name: 'Crimson' }
+    ];
+    const siteThemeButton = document.getElementById('site-theme-button');
+    const siteThemeStatus = document.getElementById('site-theme-status');
+    const boardThemes = [
+      { id: 'ocean', name: 'Ocean' },
+      { id: 'forest', name: 'Forest' },
+      { id: 'wood', name: 'Wood' },
+      { id: 'violet', name: 'Violet' }
+    ];
+    const boardThemeButton = document.getElementById('board-theme-button');
+    const boardThemeStatus = document.getElementById('board-theme-status');
+    const pieceStyleKey = 'chess-puzzles-piece-style';
+    const pieceStyles = [
+      { id: 'classic', name: 'Classic' },
+      { id: 'cburnett', name: 'Tournament' },
+      { id: 'chessnut', name: 'Chessnut' },
+      { id: 'merida', name: 'Merida' },
+      { id: 'modern', name: 'Modern' },
+      { id: 'outline', name: 'Outline' }
+    ];
+    const traditionalPieceSets = new Set(['cburnett', 'chessnut', 'merida']);
+    const pieceAssetsUrl = 'https://cdn.jsdelivr.net/gh/lichess-org/lila@27c7f8d9fb1a04a2d8a23d8c3378a15e21ee9a54/public/piece';
+    const pieceStyleButton = document.getElementById('piece-style-button');
+    const pieceStyleStatus = document.getElementById('piece-style-status');
+    const soundKey = 'chess-puzzles-sound-settings';
+    const resultSounds = document.getElementById('result-sounds');
+    const moveSounds = document.getElementById('move-sounds');
+    const soundVolume = document.getElementById('sound-volume');
+    const soundVolumeValue = document.getElementById('sound-volume-value');
+    const soundStatus = document.getElementById('sound-status');
+    const moveSoundStyles = {
+      tap: { frequency: 220, type: 'triangle' },
+      chime: { frequency: 660, type: 'sine' },
+      digital: { frequency: 880, type: 'square' }
+    };
+    const puzzleStorageUrl = 'https://chess-puzzles.judedlloyd.workers.dev';
     let storageAvailable = true;
+    let stats = { answers: 0, wrong: 0, solved: false, solvedIds: [], solvedAnalyses: [], trainingOutcomes: [], reasons: {}, streak: 0, categorySolved: [], rating: 0, ratingSolvedIds: [], ratingWrongIds: [], ratingHistory: [] };
+    let Chess, game, puzzle, puzzleSource, playerColor, selected, pendingPromotion;
+    let solutionIndex = 0;
+    let hintSquare = null;
+    let hintTarget = null;
+    let puzzleHadWrongMove = false;
+    let puzzleFailureAnalysis = null;
+    let finished = true;
+    let drag = null;
+    let arrowDrag = null;
+    let arrows = [];
+    let suppressClick = false;
+    let nextPuzzleTimer;
+    let puzzleClock;
+    let puzzleStartedAt;
+    let rateLimitTimer;
+    let rateLimitDelay = 0;
+    let sourceGameRequest;
+    let catalog;
+    let catalogThemeCounts;
+    let puzzleSessionAvailable = true;
+    let puzzleMinimum = '';
 
-    for (let rank = 8; rank >= 1; rank--) {
-      for (let file = 0; file < 8; file++) {
-        const square = document.createElement('div');
-        const coordinate = String.fromCharCode(97 + file) + rank;
-        const piece = pieces[coordinate];
-        square.className = 'square ' + ((file + rank) % 2 === 0 ? 'light' : 'dark');
-        if (piece) {
-          square.textContent = piece[0];
-          square.classList.add(piece[1]);
+    const communityLike = document.getElementById('community-like');
+    const communityGoogle = document.getElementById('community-google');
+    const communitySignout = document.getElementById('community-signout');
+    const communityAuthStatus = document.getElementById('community-auth-status');
+    const communityStatus = document.getElementById('community-status');
+    const communityRetry = document.getElementById('community-retry');
+    const communityForm = document.getElementById('community-form');
+    const communityName = document.getElementById('community-name');
+    const communityText = document.getElementById('community-text');
+    const communityComments = document.getElementById('community-comments');
+    const communityMore = document.getElementById('community-more');
+    let communityToken = null;
+    let communityAuthMessage = '';
+    let communityPuzzleId = null;
+    let communityEpoch = 0;
+    let communityRead;
+    let communityCursor = null;
+    let communityLiked = false;
+    let communityBusy = false;
+
+    function updateCommunityAuth() {
+      communityGoogle.hidden = Boolean(communityToken);
+      communitySignout.hidden = !communityToken;
+      communityForm.hidden = !communityToken;
+      communityLike.disabled = !communityToken || communityBusy || !communityCursor;
+      communityAuthStatus.textContent = communityToken ? 'Signed in with Google. Your chosen display name will be public.' :
+        communityAuthMessage || (location.origin === 'https://jude268.github.io' ? '' : 'Google sign-in is available on the published website.');
+    }
+
+    function resetCommunity(id = null) {
+      communityEpoch++;
+      communityPuzzleId = id;
+      if (communityRead) communityRead.abort();
+      communityRead = null;
+      communityCursor = null;
+      communityLiked = false;
+      communityBusy = false;
+      communityLike.textContent = 'Like · —';
+      communityText.value = '';
+      communityComments.replaceChildren();
+      communityMore.hidden = true;
+      communityRetry.hidden = true;
+      communityStatus.textContent = '';
+      updateCommunityAuth();
+    }
+
+    async function communityRequest(path, options = {}) {
+      const headers = { ...options.headers };
+      if (communityToken) headers.Authorization = `Bearer ${communityToken}`;
+      const response = await fetch(`${puzzleStorageUrl}/community/${path}`, { ...options, headers });
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        throw new Error('Discussion is unavailable or not configured yet.');
+      }
+      if (!response.ok) {
+        const error = new Error(typeof data.error === 'string' ? data.error : 'Discussion request failed.');
+        error.status = response.status;
+        throw error;
+      }
+      return data;
+    }
+
+    function communityError(error, epoch) {
+      if (epoch !== communityEpoch || error.name === 'AbortError') return;
+      console.error('Puzzle discussion request failed:', error);
+      if (error.status === 401) {
+        communityToken = null;
+        communityAuthMessage = 'Your sign-in expired or was invalid. Please sign in again.';
+        updateCommunityAuth();
+        communityComments.querySelectorAll('.comment-delete').forEach(button => button.remove());
+      }
+      communityStatus.textContent = error.message || 'Discussion is temporarily unavailable.';
+    }
+
+    function renderCommunityComment(comment) {
+      const item = document.createElement('li');
+      const name = document.createElement('strong');
+      name.textContent = comment.name;
+      const time = document.createElement('time');
+      const date = new Date(comment.createdAt);
+      if (!Number.isNaN(date.getTime())) {
+        time.dateTime = date.toISOString();
+        time.textContent = date.toLocaleString();
+      }
+      const text = document.createElement('p');
+      text.textContent = comment.text;
+      item.append(name, time, text);
+      if (comment.own && communityToken) {
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'comment-delete';
+        remove.textContent = 'Delete';
+        remove.addEventListener('click', () => changeCommunity(`comments/${comment.id}`, 'DELETE'));
+        item.appendChild(remove);
+      }
+      communityComments.appendChild(item);
+    }
+
+    async function loadCommunity(append = false) {
+      if (!communityPuzzleId) return;
+      const epoch = communityEpoch;
+      const id = communityPuzzleId;
+      if (communityRead) communityRead.abort();
+      const controller = new AbortController();
+      communityRead = controller;
+      communityMore.hidden = true;
+      communityRetry.hidden = true;
+      communityStatus.textContent = 'Loading discussion…';
+      try {
+        const cursor = append ? `?before=${communityCursor}` : '';
+        const data = await communityRequest(`${id}${cursor}`, { signal: controller.signal });
+        if (epoch !== communityEpoch || controller.signal.aborted) return;
+        if (!Array.isArray(data.comments) || !Number.isSafeInteger(data.likes) || typeof data.liked !== 'boolean') {
+          throw new Error('The discussion server returned an invalid response.');
         }
-        board.appendChild(square);
+        communityLiked = data.liked;
+        communityLike.textContent = `${data.liked ? 'Unlike' : 'Like'} · ${data.likes}`;
+        if (!append) communityComments.replaceChildren();
+        data.comments.forEach(renderCommunityComment);
+        communityCursor = data.comments.length ? data.comments[data.comments.length - 1].id : Number.MAX_SAFE_INTEGER;
+        communityMore.hidden = !data.more;
+        communityStatus.textContent = communityComments.childElementCount ? '' : 'No comments yet.';
+        updateCommunityAuth();
+      } catch (error) {
+        if (epoch !== communityEpoch || controller.signal.aborted) return;
+        communityError(error, epoch);
+        communityRetry.hidden = false;
+      } finally {
+        if (communityRead === controller) communityRead = null;
       }
     }
 
-    try {
-      progress.textContent = localStorage.getItem(storageKey) === 'yes'
-        ? 'You have solved this puzzle on this device.'
-        : 'Your solved puzzle can be remembered on this device.';
-    } catch (error) {
-      storageAvailable = false;
-      progress.textContent = 'Your browser is not allowing progress to be saved.';
+    async function changeCommunity(action, method, data) {
+      if (!communityPuzzleId || !communityToken || communityBusy) return false;
+      const epoch = communityEpoch;
+      const id = communityPuzzleId;
+      communityBusy = true;
+      updateCommunityAuth();
+      communityForm.querySelector('button').disabled = true;
+      try {
+        await communityRequest(`${id}/${action}`, {
+          method,
+          ...(data ? { headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) } : {})
+        });
+        if (epoch !== communityEpoch) return false;
+        await loadCommunity();
+        return true;
+      } catch (error) {
+        communityError(error, epoch);
+        return false;
+      } finally {
+        if (epoch === communityEpoch) {
+          communityBusy = false;
+          communityForm.querySelector('button').disabled = false;
+          updateCommunityAuth();
+        }
+      }
     }
 
-    document.querySelectorAll('[data-answer]').forEach((button) => {
-      button.addEventListener('click', () => {
-        if (button.dataset.answer !== 'correct') {
-          feedback.textContent = 'Not quite. Look for a move that gives check and covers every escape square.';
-          return;
-        }
-        feedback.textContent = 'Correct! Queen to g7 is checkmate: the white king protects the queen.';
-        if (storageAvailable) {
-          try {
-            localStorage.setItem(storageKey, 'yes');
-            progress.textContent = 'You have solved this puzzle on this device.';
-          } catch (error) {
-            storageAvailable = false;
-            progress.textContent = 'Your browser is not allowing progress to be saved.';
+    communityLike.addEventListener('click', () => changeCommunity('like', 'PUT', { liked: !communityLiked }));
+    communityForm.addEventListener('submit', async event => {
+      event.preventDefault();
+      if (await changeCommunity('comments', 'POST', { name: communityName.value, text: communityText.value })) {
+        communityText.value = '';
+      }
+    });
+    communityMore.addEventListener('click', () => loadCommunity(true));
+    communityRetry.addEventListener('click', () => loadCommunity());
+    communitySignout.addEventListener('click', () => {
+      communityToken = null;
+      communityAuthMessage = '';
+      if (window.google?.accounts?.id) window.google.accounts.id.disableAutoSelect();
+      resetCommunity(communityPuzzleId);
+      communityForm.querySelector('button').disabled = false;
+      loadCommunity();
+    });
+
+    function initializeCommunitySignIn() {
+      if (location.origin !== 'https://jude268.github.io') {
+        communityAuthStatus.textContent = 'Google sign-in is available on the published website.';
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.onload = () => {
+        window.google.accounts.id.initialize({
+          client_id: '675567030828-7sppebrm9600ovq72sp12o8n7a6bvb7i.apps.googleusercontent.com',
+          callback: response => {
+            if (!response.credential) {
+              communityAuthMessage = 'Google sign-in failed. Please try again.';
+              updateCommunityAuth();
+              return;
+            }
+            communityToken = response.credential;
+            communityAuthMessage = '';
+            resetCommunity(communityPuzzleId);
+            communityForm.querySelector('button').disabled = false;
+            loadCommunity();
           }
+        });
+        window.google.accounts.id.renderButton(communityGoogle, { theme: 'outline', size: 'large', text: 'signin_with' });
+      };
+      script.onerror = () => {
+        communityAuthMessage = 'Google sign-in could not load. Please try again later.';
+        updateCommunityAuth();
+      };
+      document.head.appendChild(script);
+    }
+    initializeCommunitySignIn();
+
+    function updatePuzzleTime() {
+      puzzleTime.textContent = `Time: ${Math.floor((performance.now() - puzzleStartedAt) / 1000)}s`;
+    }
+
+    function stopPuzzleClock() {
+      if (puzzleStartedAt !== undefined) updatePuzzleTime();
+      clearInterval(puzzleClock);
+      puzzleClock = undefined;
+      puzzleStartedAt = undefined;
+    }
+
+    function startPuzzleClock(elapsed = 0) {
+      puzzleStartedAt = performance.now() - elapsed;
+      updatePuzzleTime();
+      puzzleClock = setInterval(updatePuzzleTime, 1000);
+    }
+
+    let siteThemeIndex = siteThemes.findIndex(theme => theme.id === 'crimson');
+    try {
+      const savedTheme = localStorage.getItem(siteThemeKey);
+      if (savedTheme !== null) {
+        const index = siteThemes.findIndex(theme => theme.id === savedTheme);
+        if (index === -1) throw new Error('Stored website theme is invalid');
+        siteThemeIndex = index;
+      }
+    } catch (error) {
+      console.error('Unable to load website theme:', error);
+      siteThemeStatus.textContent = 'Your website theme could not be loaded.';
+    }
+    function renderSiteTheme() {
+      const theme = siteThemes[siteThemeIndex];
+      document.documentElement.dataset.siteTheme = theme.id;
+      siteThemeButton.textContent = `Website: ${theme.name}`;
+    }
+    renderSiteTheme();
+    siteThemeButton.addEventListener('click', () => {
+      siteThemeIndex = (siteThemeIndex + 1) % siteThemes.length;
+      renderSiteTheme();
+      try {
+        localStorage.setItem(siteThemeKey, siteThemes[siteThemeIndex].id);
+        siteThemeStatus.textContent = '';
+      } catch (error) {
+        console.error('Unable to save website theme:', error);
+        siteThemeStatus.textContent = 'Your website theme cannot be saved in this browser.';
+      }
+    });
+
+    try {
+      const savedColor = localStorage.getItem(arrowColorKey);
+      if (savedColor !== null) {
+        if (!/^#[0-9a-f]{6}$/i.test(savedColor)) throw new Error('Stored arrow colour is invalid');
+        arrowColor.value = savedColor;
+      }
+    } catch (error) {
+      console.error('Unable to load arrow colour:', error);
+      arrowColorStatus.textContent = 'Your arrow colour could not be loaded.';
+    }
+    arrowColor.addEventListener('input', () => {
+      try {
+        localStorage.setItem(arrowColorKey, arrowColor.value);
+        arrowColorStatus.textContent = '';
+      } catch (error) {
+        console.error('Unable to save arrow colour:', error);
+        arrowColorStatus.textContent = 'Your arrow colour cannot be saved in this browser.';
+      }
+    });
+
+    let boardThemeIndex = boardThemes.findIndex(theme => theme.id === 'violet');
+    try {
+      const savedTheme = localStorage.getItem(boardThemeKey);
+      if (savedTheme !== null) {
+        const index = boardThemes.findIndex(theme => theme.id === savedTheme);
+        if (index === -1) throw new Error('Stored board theme is invalid');
+        boardThemeIndex = index;
+      }
+    } catch (error) {
+      console.error('Unable to load board theme:', error);
+      boardThemeStatus.textContent = 'Your board theme could not be loaded.';
+    }
+
+    function renderBoardTheme() {
+      const theme = boardThemes[boardThemeIndex];
+      document.documentElement.dataset.boardTheme = theme.id;
+      boardThemeButton.textContent = `Board theme: ${theme.name}`;
+    }
+
+    renderBoardTheme();
+    boardThemeButton.addEventListener('click', () => {
+      boardThemeIndex = (boardThemeIndex + 1) % boardThemes.length;
+      renderBoardTheme();
+      try {
+        localStorage.setItem(boardThemeKey, boardThemes[boardThemeIndex].id);
+        boardThemeStatus.textContent = '';
+      } catch (error) {
+        console.error('Unable to save board theme:', error);
+        boardThemeStatus.textContent = 'Your board theme cannot be saved in this browser.';
+      }
+    });
+
+    let pieceStyleIndex = pieceStyles.findIndex(style => style.id === 'cburnett');
+    try {
+      const savedStyle = localStorage.getItem(pieceStyleKey);
+      if (savedStyle !== null) {
+        const index = pieceStyles.findIndex(style => style.id === savedStyle);
+        if (index === -1) throw new Error('Stored piece style is invalid');
+        pieceStyleIndex = index;
+      }
+    } catch (error) {
+      console.error('Unable to load piece style:', error);
+      pieceStyleStatus.textContent = 'Your piece style could not be loaded.';
+    }
+
+    function renderPieceStyle() {
+      const style = pieceStyles[pieceStyleIndex];
+      document.documentElement.dataset.pieceStyle = style.id;
+      pieceStyleButton.textContent = `Piece style: ${style.name}`;
+      document.querySelectorAll('.piece').forEach(updatePieceAsset);
+    }
+    renderPieceStyle();
+    pieceStyleButton.addEventListener('click', () => {
+      pieceStyleIndex = (pieceStyleIndex + 1) % pieceStyles.length;
+      renderPieceStyle();
+      try {
+        localStorage.setItem(pieceStyleKey, pieceStyles[pieceStyleIndex].id);
+        pieceStyleStatus.textContent = '';
+      } catch (error) {
+        console.error('Unable to save piece style:', error);
+        pieceStyleStatus.textContent = 'Your piece style cannot be saved in this browser.';
+      }
+    });
+
+    function updatePieceAsset(piece) {
+      piece.classList.remove('asset-ready');
+      piece.querySelector('.piece-asset')?.remove();
+      const style = pieceStyles[pieceStyleIndex].id;
+      if (!traditionalPieceSets.has(style)) return;
+      const image = document.createElement('img');
+      image.className = 'piece-asset';
+      image.alt = '';
+      image.addEventListener('load', () => {
+        if (image.isConnected) piece.classList.add('asset-ready');
+      });
+      image.addEventListener('error', () => {
+        if (!image.isConnected) return;
+        console.error('Unable to load piece image:', image.src);
+        pieceStyleStatus.textContent = 'Some piece images could not be loaded; showing classic pieces instead.';
+      });
+      image.src = `${pieceAssetsUrl}/${style}/${piece.dataset.color}${piece.dataset.type.toUpperCase()}.svg`;
+      piece.appendChild(image);
+    }
+
+    function createPiece(color, type) {
+      const piece = document.createElement('span');
+      piece.className = 'piece';
+      piece.dataset.color = color;
+      piece.dataset.type = type;
+      piece.setAttribute('aria-hidden', 'true');
+      const symbol = document.createElement('span');
+      symbol.className = 'piece-symbol';
+      symbol.textContent = pieces[color + type];
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.classList.add('piece-art');
+      svg.setAttribute('viewBox', '0 0 48 48');
+      svg.setAttribute('focusable', 'false');
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', pieceShapes[type]);
+      svg.appendChild(path);
+      piece.append(symbol, svg);
+      updatePieceAsset(piece);
+      return piece;
+    }
+
+    try {
+      const savedSounds = localStorage.getItem(soundKey);
+      if (savedSounds !== null) {
+        const settings = JSON.parse(savedSounds);
+        if (!settings || typeof settings.results !== 'boolean' || typeof settings.moves !== 'boolean' ||
+            (settings.volume !== undefined && (!Number.isInteger(settings.volume) || settings.volume < 0 || settings.volume > 100)) ||
+            (settings.moveStyle !== undefined &&
+              (typeof settings.moveStyle !== 'string' || !Array.from(moveSounds.options).some(option => option.value === settings.moveStyle) ||
+               settings.moves !== (settings.moveStyle !== 'off')))) {
+          throw new Error('Stored sound settings are invalid');
+        }
+        resultSounds.checked = settings.results;
+        moveSounds.value = settings.moveStyle === undefined ? (settings.moves ? 'tap' : 'off') : settings.moveStyle;
+        if (settings.volume !== undefined) soundVolume.value = settings.volume;
+      }
+    } catch (error) {
+      console.error('Unable to load sound settings:', error);
+      soundStatus.textContent = 'Sound settings could not be loaded.';
+    }
+
+    soundVolumeValue.textContent = `${soundVolume.value}%`;
+    function saveSoundSettings() {
+      try {
+        localStorage.setItem(soundKey, JSON.stringify({ results: resultSounds.checked, moves: moveSounds.value !== 'off', moveStyle: moveSounds.value, volume: Number(soundVolume.value) }));
+        soundStatus.textContent = '';
+      } catch (error) {
+        console.error('Unable to save sound settings:', error);
+        soundStatus.textContent = 'Sound settings cannot be saved in this browser.';
+      }
+    }
+    resultSounds.addEventListener('change', saveSoundSettings);
+    moveSounds.addEventListener('change', () => {
+      saveSoundSettings();
+      playSound('move');
+    });
+    soundVolume.addEventListener('input', () => {
+      soundVolumeValue.textContent = `${soundVolume.value}%`;
+      saveSoundSettings();
+    });
+
+    let audioContext;
+    function soundError(error) {
+      console.error('Unable to play sound:', error);
+      soundStatus.textContent = 'Sound could not be played in this browser.';
+    }
+
+    function playSound(kind, delay = 0) {
+      if (kind === 'move' ? moveSounds.value === 'off' : !resultSounds.checked) return;
+      const volume = Number(soundVolume.value) / 100;
+      if (volume === 0) return;
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) throw new Error('Web Audio is not supported');
+        if (!audioContext) audioContext = new AudioContext();
+        if (audioContext.state === 'suspended') audioContext.resume().catch(soundError);
+        const style = moveSoundStyles[moveSounds.value];
+        const notes = kind === 'correct' ? [523, 659, 784] : kind === 'incorrect' ? [260, 190] : [style.frequency];
+        const duration = kind === 'move' ? .09 : .14;
+        const start = audioContext.currentTime + delay;
+        notes.forEach((frequency, index) => {
+          const time = start + index * duration;
+          const oscillator = audioContext.createOscillator();
+          const gain = audioContext.createGain();
+          oscillator.type = kind === 'move' ? style.type : kind === 'correct' ? 'sine' : 'triangle';
+          oscillator.frequency.setValueAtTime(frequency, time);
+          gain.gain.setValueAtTime(.0001, time);
+          gain.gain.exponentialRampToValueAtTime((kind === 'move' ? .8 : .75) * volume, time + .01);
+          gain.gain.exponentialRampToValueAtTime(.0001, time + duration);
+          oscillator.connect(gain);
+          gain.connect(audioContext.destination);
+          oscillator.start(time);
+          oscillator.stop(time + duration);
+        });
+      } catch (error) {
+        soundError(error);
+      }
+    }
+
+    function puzzleNumber(id) {
+      const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+      let number = 1n;
+      for (const character of id) {
+        number = number * 62n + BigInt(alphabet.indexOf(character));
+      }
+      return number.toString();
+    }
+
+    function renderSourceGame(source) {
+      const players = Array.isArray(source?.players) ? source.players : [];
+      document.getElementById('source-game-description').textContent = 'Lichess usernames and ratings from the game.';
+      for (const color of ['white', 'black']) {
+        const player = players.find(item => item && item.color === color);
+        const name = typeof player?.name === 'string' ? player.name.trim() : '';
+        const title = typeof player?.title === 'string' ? player.title.trim() : '';
+        const rating = Number.isFinite(player?.rating) ? ` (${player.rating})` : '';
+        document.getElementById(`${color}-player`).textContent = name
+          ? `${title ? title + ' ' : ''}${name}${rating}`
+          : 'Player unavailable';
+      }
+      const link = document.getElementById('game-link');
+      const validId = typeof source?.id === 'string' && /^[a-zA-Z0-9]{8}$/.test(source.id);
+      link.hidden = !validId;
+      if (validId) link.href = `https://lichess.org/${source.id}`;
+      else link.removeAttribute('href');
+      document.getElementById('missing-game-link').hidden = validId;
+      sourceGame.hidden = false;
+    }
+
+    async function loadSourceGamePlayers(source) {
+      if (Array.isArray(source?.players) && source.players.length) return;
+      if (typeof source?.id !== 'string' || !/^[a-zA-Z0-9]{8}$/.test(source.id)) return;
+      const request = new AbortController();
+      sourceGameRequest = request;
+      const description = document.getElementById('source-game-description');
+      description.textContent = 'Loading player names from Lichess...';
+      try {
+        const url = new URL(`https://lichess.org/game/export/${source.id}`);
+        url.search = 'moves=false&clocks=false&evals=false&opening=false';
+        const response = await fetch(url, { headers: { Accept: 'application/json' }, signal: request.signal });
+        if (!response.ok) throw new Error(`Lichess returned HTTP ${response.status}.`);
+        const data = await response.json();
+        if (!data || data.id !== source.id || !data.players || typeof data.players !== 'object') {
+          throw new Error('Lichess returned unsupported game data.');
+        }
+        if (sourceGameRequest !== request || request.signal.aborted) return;
+        const players = ['white', 'black'].map(color => {
+          const player = data.players[color];
+          return {
+            color,
+            name: player?.user?.name || (Number.isInteger(player?.aiLevel) ? `Computer level ${player.aiLevel}` : ''),
+            title: player?.user?.title,
+            rating: player?.rating
+          };
+        });
+        renderSourceGame({ id: source.id, players });
+      } catch (error) {
+        if (request.signal.aborted || sourceGameRequest !== request) return;
+        console.error('Unable to load source game players:', error);
+        description.textContent = 'Player names could not be loaded from Lichess. You can open the source game below.';
+      } finally {
+        if (sourceGameRequest === request) sourceGameRequest = undefined;
+      }
+    }
+
+    function renderStats() {
+      answerCount.textContent = stats.answers;
+      wrongCount.textContent = stats.wrong;
+      solvedCount.textContent = stats.solvedIds.length;
+      streakCount.textContent = stats.streak;
+      currentRating.textContent = stats.rating.toLocaleString();
+      headerRating.textContent = `Rating: ${stats.rating.toLocaleString()}`;
+      headerRating.setAttribute('aria-label', `Puzzle rating: ${stats.rating.toLocaleString()}. View rating history`);
+      playerRating.textContent = stats.rating.toLocaleString();
+      expandedRating.textContent = stats.rating.toLocaleString();
+      renderRatingChart();
+      progress.textContent = storageAvailable
+        ? 'Stats are saved in this browser on this device.'
+        : 'Stats cannot be saved in this browser; changes will be lost on reload.';
+      historyNote.textContent = storageAvailable
+        ? 'Saved in this browser. Select a puzzle to see its analysis. Newest first.'
+        : 'History cannot be saved in this browser and will be lost on reload.';
+      const openHistoryIds = new Set(Array.from(historyList.querySelectorAll('details[open]'), details => details.dataset.puzzleId));
+      const analyses = new Map(stats.solvedAnalyses.map(item => [item.id, item.reasons]));
+      historyList.replaceChildren();
+      emptyHistory.hidden = stats.solvedIds.length > 0;
+      [...stats.solvedIds].reverse().forEach(id => {
+        const item = document.createElement('li');
+        if (/^[0-9A-Za-z]{1,32}$/.test(id)) {
+          const details = document.createElement('details');
+          details.dataset.puzzleId = id;
+          details.open = openHistoryIds.has(id);
+          const summary = document.createElement('summary');
+          summary.textContent = `Puzzle #${puzzleNumber(id)} · Lichess ${id}`;
+          details.appendChild(summary);
+          const analysis = document.createElement('div');
+          analysis.className = 'failure-analysis';
+          const description = document.createElement('p');
+          if (!analyses.has(id)) {
+            description.textContent = 'No analysis was saved for this older puzzle.';
+          } else if (analyses.get(id) === null) {
+            description.textContent = 'No wrong moves were recorded during this completed attempt.';
+          } else {
+            description.textContent = 'Latest wrong move in this completed attempt. Relative rule-based scores, not probabilities or a diagnosis.';
+            const list = document.createElement('ol');
+            renderFailureScores(list, analyses.get(id));
+            analysis.append(description, list);
+          }
+          if (!description.parentNode) analysis.appendChild(description);
+          details.appendChild(analysis);
+          const link = document.createElement('a');
+          link.className = 'source-link';
+          link.href = `https://lichess.org/training/${id}`;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.textContent = 'Open puzzle on Lichess ↗';
+          details.appendChild(link);
+          item.appendChild(details);
+        } else {
+          item.textContent = `Unavailable puzzle ID: ${id}`;
+        }
+        historyList.appendChild(item);
+      });
+      reasonList.replaceChildren();
+      const entries = Object.entries(stats.reasons);
+      emptyReasons.hidden = entries.length > 0;
+      entries.forEach(([reason, count]) => {
+        const item = document.createElement('li');
+        item.textContent = `${reason}: ${count}`;
+        reasonList.appendChild(item);
+      });
+      renderCategoryProgress();
+      renderTrainingInsights();
+    }
+
+    function renderTrainingInsights() {
+      const themes = new Map();
+      const reasons = new Map();
+      let failed = 0;
+      stats.trainingOutcomes.forEach(outcome => {
+        outcome.themes.forEach(theme => {
+          const count = themes.get(theme) || { total: 0, failed: 0 };
+          count.total++;
+          if (outcome.result === 'failed') count.failed++;
+          themes.set(theme, count);
+        });
+        if (outcome.result === 'failed') {
+          failed++;
+          reasons.set(outcome.reason, (reasons.get(outcome.reason) || 0) + 1);
         }
       });
+      const options = new Map(Array.from(themeSelect.options, option => [option.value, option.textContent]));
+      const themeResults = Array.from(themes, ([theme, count]) => ({ theme, ...count }))
+        .sort((a, b) => b.failed * a.total - a.failed * b.total || b.failed - a.failed || a.theme.localeCompare(b.theme));
+      const recommendations = themeResults
+        .filter(item => item.total >= 3 && item.failed > 0 && options.has(item.theme))
+        .slice(0, 3);
+      trainingThemes.replaceChildren();
+      trainingThemesEmpty.hidden = themeResults.length > 0;
+      themeResults.forEach(item => {
+        const row = document.createElement('li');
+        const label = (options.get(item.theme) || item.theme).replace(/ \([^)]*\)$/, '');
+        row.textContent = `${label}: ${item.failed}/${item.total} missed (${Math.round(100 * item.failed / item.total)}%)`;
+        trainingThemes.appendChild(row);
+      });
+      trainingRecommendations.replaceChildren();
+      trainingRecommendationsEmpty.hidden = recommendations.length > 0;
+      recommendations.forEach(item => {
+        const row = document.createElement('li');
+        const button = document.createElement('button');
+        button.type = 'button';
+        const label = options.get(item.theme).replace(/ \([^)]*\)$/, '');
+        button.textContent = `Practise ${label} · ${item.failed}/${item.total} missed (${Math.round(100 * item.failed / item.total)}%)`;
+        button.addEventListener('click', () => {
+          if (themeSelect.disabled) {
+            feedback.textContent = 'Wait for the current puzzle to finish loading.';
+            return;
+          }
+          themeSelect.value = item.theme;
+          themeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+          board.scrollIntoView({ block: 'start' });
+        });
+        row.appendChild(button);
+        trainingRecommendations.appendChild(row);
+      });
+      trainingReasons.replaceChildren();
+      trainingReasonsEmpty.hidden = failed > 0;
+      [...reasons].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).forEach(([reason, count]) => {
+        const row = document.createElement('li');
+        row.textContent = `${reason}: ${count}/${failed} (${Math.round(100 * count / failed)}%)`;
+        trainingReasons.appendChild(row);
+      });
+    }
+
+    function recordTrainingOutcome(result) {
+      if (stats.trainingOutcomes.some(item => item.id === puzzle.id)) return;
+      stats.trainingOutcomes.push({
+        id: puzzle.id,
+        themes: [...new Set(puzzle.themes)],
+        result,
+        reason: result === 'failed' ? puzzleFailureAnalysis[0].name : null
+      });
+    }
+
+    function renderCategoryProgress() {
+      if (!catalog) {
+        categoryProgressStatus.textContent = puzzleStorageUrl
+          ? 'Category totals are unavailable until the catalog loads.'
+          : 'Category completion requires a configured puzzle catalog.';
+        return;
+      }
+      const currentShards = new Set(catalog.shards.map(shard => shard.key));
+      const theme = themeSelect.value;
+      const total = theme ? catalogThemeCounts[theme] : catalog.total;
+      const completed = stats.categorySolved.filter(solved =>
+        currentShards.has(solved.shard) && (!theme || solved.themes.includes(theme))
+      ).length;
+      const percent = (completed * 100 / total).toLocaleString(undefined, { maximumFractionDigits: 6 });
+      categoryProgressStatus.textContent = `Completion: ${completed.toLocaleString()} / ${total.toLocaleString()} (${percent}%)` +
+        (storageAvailable ? '' : ' Progress cannot be saved in this browser.');
+    }
+
+    function renderRatingChart() {
+      const history = stats.ratingHistory;
+      ratingChart.replaceChildren();
+      ratingChart.toggleAttribute('hidden', history.length < 2);
+      ratingChartDates.hidden = history.length < 2;
+      if (history.length < 2) {
+        ratingHistorySummary.textContent = 'Your rating graph will appear after your first rating change.';
+        return;
+      }
+      const first = history[0];
+      const last = history[history.length - 1];
+      ratingHistorySummary.textContent = `Rating changed from ${first.rating.toLocaleString()} to ${last.rating.toLocaleString()} over ${history.length - 1} rating changes, oldest to newest. Dots mark the starting rating and each change.`;
+      document.getElementById('rating-chart-start').textContent = new Date(first.time).toLocaleDateString();
+      document.getElementById('rating-chart-end').textContent = new Date(last.time).toLocaleDateString();
+      const values = history.map(point => point.rating);
+      const min = values.reduce((a, b) => Math.min(a, b));
+      const max = values.reduce((a, b) => Math.max(a, b));
+      const range = Math.max(1, max - min);
+      const svg = 'http://www.w3.org/2000/svg';
+      const points = history.map((point, index) => ({
+        x: 50 + index * 540 / (history.length - 1),
+        y: 175 - (point.rating - min) * 160 / range
+      }));
+      const defs = document.createElementNS(svg, 'defs');
+      const gradient = document.createElementNS(svg, 'linearGradient');
+      gradient.id = 'rating-area-gradient';
+      gradient.setAttribute('x1', '0');
+      gradient.setAttribute('y1', '0');
+      gradient.setAttribute('x2', '0');
+      gradient.setAttribute('y2', '1');
+      for (const [offset, opacity] of [['0%', '.22'], ['100%', '0']]) {
+        const stop = document.createElementNS(svg, 'stop');
+        stop.setAttribute('offset', offset);
+        stop.setAttribute('stop-color', 'currentColor');
+        stop.setAttribute('stop-opacity', opacity);
+        gradient.appendChild(stop);
+      }
+      defs.appendChild(gradient);
+      ratingChart.appendChild(defs);
+      for (const [y, value] of [[15, max], [175, min]]) {
+        const line = document.createElementNS(svg, 'line');
+        line.setAttribute('x1', '50');
+        line.setAttribute('x2', '590');
+        line.setAttribute('y1', y);
+        line.setAttribute('y2', y);
+        line.setAttribute('class', 'grid-line');
+        const label = document.createElementNS(svg, 'text');
+        label.setAttribute('x', '44');
+        label.setAttribute('y', y + 4);
+        label.setAttribute('text-anchor', 'end');
+        label.textContent = value.toLocaleString();
+        ratingChart.append(line, label);
+      }
+      const pointList = points.map(point => `${point.x},${point.y}`).join(' ');
+      const area = document.createElementNS(svg, 'polygon');
+      area.setAttribute('points', `50,175 ${pointList} 590,175`);
+      area.setAttribute('fill', 'url(#rating-area-gradient)');
+      ratingChart.appendChild(area);
+      const line = document.createElementNS(svg, 'polyline');
+      line.setAttribute('class', 'rating-line');
+      line.setAttribute('points', pointList);
+      ratingChart.appendChild(line);
+      const colors = ['#b79aff', '#67e8f9', '#f9a8d4', '#a7f3b2', '#ffd27d', '#a5b4fc'];
+      const radius = Math.min(4, Math.max(1.25, 135 / history.length));
+      points.forEach((point, index) => {
+        const dot = document.createElementNS(svg, 'circle');
+        dot.setAttribute('class', 'rating-dot');
+        dot.setAttribute('cx', point.x);
+        dot.setAttribute('cy', point.y);
+        dot.setAttribute('r', radius);
+        dot.style.color = colors[index % colors.length];
+        const title = document.createElementNS(svg, 'title');
+        const change = index === 0 ? 'Starting rating' : 'Rating';
+        title.textContent = `${change}: ${history[index].rating.toLocaleString()} · ${new Date(history[index].time).toLocaleString()}`;
+        dot.appendChild(title);
+        ratingChart.appendChild(dot);
+      });
+    }
+
+    function saveStats() {
+      if (storageAvailable) {
+        try {
+          localStorage.setItem(storageKey, JSON.stringify(stats));
+        } catch (error) {
+          console.error('Unable to save puzzle stats:', error);
+          storageAvailable = false;
+        }
+      }
+      renderStats();
+    }
+
+    function validFailureAnalysis(reasons) {
+      return Array.isArray(reasons) && reasons.length === 3 &&
+        reasons.every(reason => reason && typeof reason.name === 'string' &&
+          reason.name.length <= 100 && typeof reason.clue === 'string' && reason.clue.length <= 300 &&
+          Number.isInteger(reason.percentage) && reason.percentage >= 0 && reason.percentage <= 100) &&
+        reasons.reduce((sum, reason) => sum + reason.percentage, 0) === 100;
+    }
+
+    try {
+      const saved = localStorage.getItem(storageKey);
+      if (saved !== null) {
+        const parsed = JSON.parse(saved);
+        const validReasons = Array.from(reasonSelect.options, option => option.value);
+        if (!parsed || !Number.isSafeInteger(parsed.answers) || parsed.answers < 0 ||
+            !Number.isSafeInteger(parsed.wrong) || parsed.wrong < 0 || parsed.wrong > parsed.answers ||
+            typeof parsed.solved !== 'boolean' ||
+            (parsed.streak !== undefined && (!Number.isSafeInteger(parsed.streak) || parsed.streak < 0)) ||
+            (parsed.rating !== undefined && (!Number.isSafeInteger(parsed.rating) || parsed.rating < 0)) ||
+            (parsed.ratingHistory !== undefined && (!Array.isArray(parsed.ratingHistory) ||
+              !parsed.ratingHistory.every((point, index) => point && Number.isSafeInteger(point.time) &&
+                point.time >= 0 && point.time <= 8640000000000000 &&
+                Number.isSafeInteger(point.rating) && point.rating >= 0 &&
+                (index === 0 || point.time >= parsed.ratingHistory[index - 1].time)) ||
+              (parsed.ratingHistory.length > 0 &&
+                parsed.ratingHistory[parsed.ratingHistory.length - 1].rating !== parsed.rating))) ||
+            (parsed.ratingSolvedIds !== undefined && (!Array.isArray(parsed.ratingSolvedIds) ||
+              !parsed.ratingSolvedIds.every(id => typeof id === 'string' && /^[0-9A-Za-z]{1,32}$/.test(id) &&
+                Array.isArray(parsed.solvedIds) && parsed.solvedIds.includes(id)) ||
+              new Set(parsed.ratingSolvedIds).size !== parsed.ratingSolvedIds.length)) ||
+            (parsed.ratingWrongIds !== undefined && (!Array.isArray(parsed.ratingWrongIds) ||
+              !parsed.ratingWrongIds.every(id => typeof id === 'string' && /^[0-9A-Za-z]{1,32}$/.test(id) &&
+                !(parsed.ratingSolvedIds || []).includes(id)) ||
+              new Set(parsed.ratingWrongIds).size !== parsed.ratingWrongIds.length)) ||
+            (parsed.categorySolved !== undefined && (!Array.isArray(parsed.categorySolved) ||
+              !parsed.categorySolved.every(item => item && typeof item.id === 'string' &&
+                /^[0-9A-Za-z]{1,32}$/.test(item.id) && typeof item.shard === 'string' &&
+                /^datasets\/[a-f0-9]{32}\/part-\d{5}\.json$/.test(item.shard) &&
+                Array.isArray(item.themes) && item.themes.every(theme => typeof theme === 'string' && /^[A-Za-z0-9]+$/.test(theme)) &&
+                new Set(item.themes).size === item.themes.length && Array.isArray(parsed.solvedIds) && parsed.solvedIds.includes(item.id)) ||
+              new Set(parsed.categorySolved.map(item => `${item.shard}:${item.id}`)).size !== parsed.categorySolved.length)) ||
+            (parsed.solvedIds !== undefined && (!Array.isArray(parsed.solvedIds) ||
+              !parsed.solvedIds.every(id => typeof id === 'string') ||
+              new Set(parsed.solvedIds).size !== parsed.solvedIds.length)) ||
+            (parsed.solvedAnalyses !== undefined && (!Array.isArray(parsed.solvedAnalyses) ||
+              !parsed.solvedAnalyses.every(item => item && typeof item.id === 'string' &&
+                Array.isArray(parsed.solvedIds) && parsed.solvedIds.includes(item.id) &&
+                (item.reasons === null || validFailureAnalysis(item.reasons))) ||
+              new Set(parsed.solvedAnalyses.map(item => item.id)).size !== parsed.solvedAnalyses.length)) ||
+            (parsed.trainingOutcomes !== undefined && (!Array.isArray(parsed.trainingOutcomes) ||
+              !parsed.trainingOutcomes.every(item => item && typeof item.id === 'string' &&
+                /^[0-9A-Za-z]{1,32}$/.test(item.id) && Array.isArray(item.themes) &&
+                item.themes.every(theme => typeof theme === 'string') &&
+                new Set(item.themes).size === item.themes.length &&
+                ((item.result === 'failed' && typeof item.reason === 'string' && item.reason.length > 0 && item.reason.length <= 100) ||
+                  (item.result === 'solved' && item.reason === null))) ||
+              new Set(parsed.trainingOutcomes.map(item => item.id)).size !== parsed.trainingOutcomes.length)) ||
+            !parsed.reasons || Array.isArray(parsed.reasons) ||
+            typeof parsed.reasons !== 'object' ||
+            !Object.entries(parsed.reasons).every(([reason, count]) =>
+              reason !== '' && validReasons.includes(reason) && Number.isSafeInteger(count) && count > 0)) {
+          throw new Error('Stored puzzle stats have an invalid format');
+        }
+        stats = { ...parsed, solvedIds: parsed.solvedIds || [], solvedAnalyses: parsed.solvedAnalyses || [], trainingOutcomes: parsed.trainingOutcomes || [], streak: parsed.streak === undefined ? 0 : parsed.streak, categorySolved: parsed.categorySolved || [], rating: parsed.rating === undefined ? 0 : parsed.rating, ratingSolvedIds: parsed.ratingSolvedIds || [], ratingWrongIds: parsed.ratingWrongIds || [], ratingHistory: parsed.ratingHistory || [] };
+      }
+    } catch (error) {
+      console.error('Unable to load puzzle stats:', error);
+      storageAvailable = false;
+    }
+    renderStats();
+
+    reasonForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const reason = reasonSelect.value;
+      if (!reason) return;
+      stats.reasons[reason] = (stats.reasons[reason] || 0) + 1;
+      reasonForm.hidden = true;
+      feedback.textContent = 'Reason recorded. You can try another answer.';
+      saveStats();
+      savePuzzleSession();
     });
+
+    function renderBoard() {
+      if (drag) endDrag({ pointerId: drag.pointerId }, true);
+      hintButton.disabled = finished || !!pendingPromotion;
+      const focusedSquare = board.contains(document.activeElement) ? document.activeElement.dataset.square : null;
+      board.replaceChildren();
+      board.classList.remove('unavailable');
+      const files = playerColor === 'w' ? 'abcdefgh' : 'hgfedcba';
+      const ranks = playerColor === 'w' ? [8, 7, 6, 5, 4, 3, 2, 1] : [1, 2, 3, 4, 5, 6, 7, 8];
+      const legalMoves = selected ? game.moves({ square: selected, verbose: true }).map(move => move.to) : [];
+      ranks.forEach((rank, row) => {
+        Array.from(files).forEach((file, column) => {
+          const coordinate = file + rank;
+          const piece = game.get(coordinate);
+          const square = document.createElement('button');
+          square.type = 'button';
+          square.dataset.square = coordinate;
+          square.className = `square ${(file.charCodeAt(0) - 97 + rank) % 2 === 0 ? 'light' : 'dark'}`;
+          square.setAttribute('aria-label', `${coordinate}, ${piece ? (piece.color === 'w' ? 'white ' : 'black ') + pieceNames[piece.type] : 'empty'}`);
+          square.setAttribute('aria-pressed', String(coordinate === selected));
+          if (coordinate === selected) square.classList.add('selected');
+          if (coordinate === hintSquare) square.classList.add('hint');
+          if (coordinate === hintTarget) square.classList.add('hint-target');
+          if (legalMoves.includes(coordinate)) square.classList.add('legal');
+          if (piece) {
+            square.appendChild(createPiece(piece.color, piece.type));
+            square.classList.add(piece.color === 'w' ? 'white-piece' : 'black-piece');
+          }
+          if (column === 0) {
+            const label = document.createElement('span');
+            label.className = 'coordinate rank';
+            label.textContent = rank;
+            label.setAttribute('aria-hidden', 'true');
+            square.appendChild(label);
+          }
+          if (row === 7) {
+            const label = document.createElement('span');
+            label.className = 'coordinate file';
+            label.textContent = file;
+            label.setAttribute('aria-hidden', 'true');
+            square.appendChild(label);
+          }
+          square.addEventListener('click', () => chooseSquare(coordinate));
+          board.appendChild(square);
+        });
+        if (focusedSquare) board.querySelector(`[data-square="${focusedSquare}"]`)?.focus({ preventScroll: true });
+      });
+    }
+
+    function selectSquare(coordinate) {
+      selected = coordinate;
+      const legalMoves = selected ? game.moves({ square: selected, verbose: true }).map(move => move.to) : [];
+      board.querySelectorAll('.square').forEach(square => {
+        square.classList.toggle('selected', square.dataset.square === selected);
+        square.classList.toggle('legal', legalMoves.includes(square.dataset.square));
+        square.setAttribute('aria-pressed', String(square.dataset.square === selected));
+      });
+      feedback.textContent = selected
+        ? `${pieceNames[game.get(selected).type]} on ${selected} selected. Choose a destination.`
+        : 'Piece unselected. Select a piece to move.';
+    }
+
+    function renderArrows(preview) {
+      arrowLayer.replaceChildren();
+      const displayed = preview ? [...arrows, preview] : arrows;
+      const point = square => {
+        const file = square.charCodeAt(0) - 97;
+        const rank = Number(square[1]) - 1;
+        return playerColor === 'w' ? [file + .5, 7 - rank + .5] : [7 - file + .5, rank + .5];
+      };
+      for (const arrow of displayed) {
+        if (arrow.from === arrow.to) continue;
+        const [x1, y1] = point(arrow.from);
+        const [x2, y2] = point(arrow.to);
+        const length = Math.hypot(x2 - x1, y2 - y1);
+        const dx = (x2 - x1) / length, dy = (y2 - y1) / length;
+        const bx = x2 - dx * .35, by = y2 - dy * .35;
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', `M ${x1 - dy * .09} ${y1 + dx * .09} L ${bx - dy * .09} ${by + dx * .09} L ${bx - dy * .23} ${by + dx * .23} L ${x2} ${y2} L ${bx + dy * .23} ${by - dx * .23} L ${bx + dy * .09} ${by - dx * .09} L ${x1 + dy * .09} ${y1 - dx * .09} Z`);
+        path.setAttribute('fill', arrow.color);
+        path.setAttribute('opacity', '.85');
+        arrowLayer.appendChild(path);
+      }
+    }
+
+    function clearArrows() {
+      arrows = [];
+      arrowDrag = null;
+      renderArrows();
+    }
+
+    board.addEventListener('contextmenu', event => event.preventDefault());
+
+    board.addEventListener('pointerdown', (event) => {
+      const square = event.target.closest('.square');
+      if (!square || !event.isPrimary || finished || pendingPromotion) return;
+      if (event.button === 2) {
+        event.preventDefault();
+        arrowDrag = { pointerId: event.pointerId, from: square.dataset.square, color: arrowColor.value };
+        square.setPointerCapture(event.pointerId);
+        return;
+      }
+      if (event.button !== 0) return;
+      const piece = game.get(square.dataset.square);
+      if (!piece || piece.color !== playerColor) return;
+      if (drag) endDrag({ pointerId: drag.pointerId }, true);
+      suppressClick = false;
+      drag = { pointerId: event.pointerId, square, from: square.dataset.square, x: event.clientX, y: event.clientY, ghost: null };
+      square.setPointerCapture(event.pointerId);
+    });
+
+    board.addEventListener('dragstart', event => event.preventDefault());
+
+    board.addEventListener('pointermove', (event) => {
+      if (arrowDrag && arrowDrag.pointerId === event.pointerId) {
+        const target = document.elementFromPoint(event.clientX, event.clientY)?.closest('.square');
+        renderArrows(target && board.contains(target) ? { ...arrowDrag, to: target.dataset.square } : null);
+        return;
+      }
+      if (!drag || drag.pointerId !== event.pointerId) return;
+      if (!drag.ghost && Math.hypot(event.clientX - drag.x, event.clientY - drag.y) >= 5) {
+        selectSquare(drag.from);
+        drag.ghost = document.createElement('span');
+        drag.ghost.className = `drag-piece ${drag.square.classList.contains('white-piece') ? 'white-piece' : 'black-piece'}`;
+        const draggedPiece = game.get(drag.from);
+        drag.ghost.appendChild(createPiece(draggedPiece.color, draggedPiece.type));
+        drag.ghost.style.fontSize = getComputedStyle(drag.square).fontSize;
+        document.body.appendChild(drag.ghost);
+        drag.square.classList.add('drag-source');
+      }
+      if (drag.ghost) {
+        drag.ghost.style.left = `${event.clientX}px`;
+        drag.ghost.style.top = `${event.clientY}px`;
+      }
+    });
+
+    function endDrag(event, cancelled = false) {
+      if (!drag || drag.pointerId !== event.pointerId) return;
+      const current = drag;
+      drag = null;
+      if (!current.ghost) return;
+      current.ghost.remove();
+      current.square.classList.remove('drag-source');
+      suppressClick = true;
+      setTimeout(() => { suppressClick = false; }, 0);
+      const target = cancelled ? null : document.elementFromPoint(event.clientX, event.clientY)?.closest('.square');
+      if (target && board.contains(target) && target.dataset.square !== current.from) {
+        chooseSquare(target.dataset.square);
+      }
+    }
+
+    function endArrowDrag(event, cancelled = false) {
+      if (!arrowDrag || arrowDrag.pointerId !== event.pointerId) return;
+      const current = arrowDrag;
+      arrowDrag = null;
+      const target = cancelled ? null : document.elementFromPoint(event.clientX, event.clientY)?.closest('.square');
+      if (target && board.contains(target) && target.dataset.square !== current.from) {
+        const to = target.dataset.square;
+        const existing = arrows.findIndex(arrow => arrow.from === current.from && arrow.to === to);
+        const previous = existing < 0 ? null : arrows.splice(existing, 1)[0];
+        if (!previous || previous.color !== current.color) arrows.push({ from: current.from, to, color: current.color });
+      }
+      renderArrows();
+    }
+
+    board.addEventListener('pointerup', event => { endArrowDrag(event); endDrag(event); });
+    board.addEventListener('pointercancel', event => { endArrowDrag(event, true); endDrag(event, true); });
+    board.addEventListener('lostpointercapture', event => { endArrowDrag(event, true); endDrag(event, true); });
+    window.addEventListener('blur', () => {
+      if (drag) endDrag({ pointerId: drag.pointerId }, true);
+      if (arrowDrag) endArrowDrag({ pointerId: arrowDrag.pointerId }, true);
+    });
+    board.addEventListener('click', (event) => {
+      if (suppressClick && event.detail !== 0) {
+        event.stopImmediatePropagation();
+        event.preventDefault();
+        suppressClick = false;
+        return;
+      }
+      if (event.button === 0) clearArrows();
+    }, true);
+
+    function chooseSquare(square) {
+      if (finished || pendingPromotion) return;
+      if (square === selected) {
+        selectSquare(null);
+        return;
+      }
+      const piece = game.get(square);
+      if (!selected || (piece && piece.color === playerColor)) {
+        if (piece && piece.color === playerColor) {
+          selectSquare(square);
+        } else {
+          feedback.textContent = `Select a ${playerColor === 'w' ? 'white' : 'black'} piece to move.`;
+        }
+        return;
+      }
+      const moves = game.moves({ square: selected, verbose: true }).filter(move => move.to === square);
+      if (!moves.length) {
+        feedback.textContent = 'That is not a legal move. Select another square.';
+        return;
+      }
+      if (moves.some(move => move.promotion)) {
+        pendingPromotion = { from: selected, to: square };
+        hintButton.disabled = true;
+        const files = playerColor === 'w' ? 'abcdefgh' : 'hgfedcba';
+        promotion.style.left = `${files.indexOf(square[0]) * 12.5}%`;
+        promotion.querySelectorAll('[data-promotion]').forEach(button => {
+          button.replaceChildren(createPiece(playerColor, button.dataset.promotion));
+          button.classList.toggle('white-piece', playerColor === 'w');
+          button.classList.toggle('black-piece', playerColor === 'b');
+        });
+        promotion.hidden = false;
+        cancelPromotion.hidden = false;
+        feedback.textContent = 'Choose a piece on the board to promote your pawn.';
+        promotion.querySelector('[data-promotion="q"]').focus({ preventScroll: true });
+        return;
+      }
+      playMove(selected, square);
+    }
+
+    function calculateFailureAnalysis(move) {
+      const replies = game.moves({ verbose: true });
+      const forcingMove = Boolean(move.captured || move.san.includes('+'));
+      const forcingReply = replies.some(reply => reply.captured || reply.san.includes('+') || reply.san.includes('#'));
+      const pieceCanBeCaptured = replies.some(reply => reply.captured && reply.to === move.to);
+      const candidates = [
+        { name: 'Candidate move selection', score: 3, clue: 'The move differs from the recorded puzzle line; other strong moves are not engine-checked.' },
+        { name: 'Calculation error', score: forcingReply ? 3 : 2, clue: forcingReply ? 'The opponent has a legal check or capture to consider.' : 'The move differs from the recorded line; the site cannot see your calculation.' },
+        { name: 'Opponent response error', score: forcingReply ? 4 : 1, clue: forcingReply ? 'The opponent has a legal check or capture; this alone does not mean you missed it.' : 'No legal check or capture was found in the immediate replies.' },
+        { name: 'Forcing move bias', score: forcingMove ? 4 : 1, clue: forcingMove ? 'Your move was a check or capture; this alone does not establish a bias.' : 'Your move was neither a check nor a capture.' },
+        { name: 'Evaluation error', score: pieceCanBeCaptured ? 4 : 1, clue: pieceCanBeCaptured ? 'The moved piece can be captured in an immediate legal reply.' : 'The moved piece cannot be captured immediately.' }
+      ];
+      const top = candidates.sort((a, b) => b.score - a.score).slice(0, 3);
+      const total = top.reduce((sum, item) => sum + item.score, 0);
+      const percentages = top.map(item => Math.floor(item.score * 100 / total));
+      let remaining = 100 - percentages.reduce((sum, value) => sum + value, 0);
+      const order = top.map((item, index) => ({ index, remainder: item.score * 100 % total }))
+        .sort((a, b) => b.remainder - a.remainder || a.index - b.index);
+      for (let i = 0; i < remaining; i++) percentages[order[i].index]++;
+      return top.map((item, index) => ({ name: item.name, clue: item.clue, percentage: percentages[index] }));
+    }
+
+    function renderFailureScores(list, reasons) {
+      list.replaceChildren();
+      reasons.forEach(item => {
+        const row = document.createElement('li');
+        const heading = document.createElement('div');
+        heading.className = 'failure-score';
+        const label = document.createElement('span');
+        label.textContent = item.name;
+        const score = document.createElement('strong');
+        score.textContent = `${item.percentage}%`;
+        const clue = document.createElement('p');
+        clue.className = 'failure-clue';
+        clue.textContent = item.clue;
+        heading.append(label, score);
+        row.append(heading, clue);
+        list.appendChild(row);
+      });
+    }
+
+    function playMove(from, to, promote) {
+      const move = game.move({ from, to, ...(promote ? { promotion: promote } : {}) });
+      playSound('move');
+      const uci = move.from + move.to + (move.promotion || '');
+      stats.answers++;
+      reasonSelect.value = '';
+      promotion.hidden = true;
+      cancelPromotion.hidden = true;
+      pendingPromotion = null;
+      selected = null;
+      const correct = uci === puzzle.solution[solutionIndex] || game.isCheckmate();
+      if (!correct) {
+        puzzleFailureAnalysis = calculateFailureAnalysis(move);
+        renderFailureScores(failureAnalysisList, puzzleFailureAnalysis);
+        failureAnalysis.hidden = false;
+        game.undo();
+        playSound('incorrect', moveSounds.value !== 'off' ? .11 : 0);
+        stats.wrong++;
+        stats.streak = 0;
+        if (!stats.ratingSolvedIds.includes(puzzle.id) && !stats.ratingWrongIds.includes(puzzle.id)) {
+          stats.ratingWrongIds.push(puzzle.id);
+          updateRating(false);
+        }
+        puzzleHadWrongMove = true;
+        recordTrainingOutcome('failed');
+        reasonForm.hidden = false;
+        feedback.textContent = 'Not the best move. Try again, or record what you think went wrong.';
+        renderBoard();
+        saveStats();
+        savePuzzleSession();
+        return;
+      }
+      reasonForm.hidden = true;
+      hintSquare = null;
+      hintTarget = null;
+      clearArrows();
+      solutionIndex++;
+      const solved = solutionIndex === puzzle.solution.length || game.isCheckmate();
+      if (solved) {
+        finished = true;
+        playSound('correct', moveSounds.value !== 'off' ? .11 : 0);
+        recordTrainingOutcome(puzzleHadWrongMove ? 'failed' : 'solved');
+        if (!puzzleHadWrongMove) stats.streak++;
+        if (!stats.solvedIds.includes(puzzle.id)) stats.solvedIds.push(puzzle.id);
+        if (!stats.solvedAnalyses.some(item => item.id === puzzle.id)) {
+          stats.solvedAnalyses.push({ id: puzzle.id, reasons: puzzleFailureAnalysis });
+        }
+        if (!stats.ratingSolvedIds.includes(puzzle.id) && !stats.ratingWrongIds.includes(puzzle.id)) {
+          stats.ratingSolvedIds.push(puzzle.id);
+          updateRating(true);
+        } else {
+          ratingChange.textContent = stats.ratingWrongIds.includes(puzzle.id)
+            ? 'Rating unchanged: the first mistake already counted as a loss.'
+            : 'Rating unchanged: this puzzle was already rated.';
+        }
+        if (puzzle.catalogShard && !stats.categorySolved.some(item => item.id === puzzle.id && item.shard === puzzle.catalogShard)) {
+          stats.categorySolved.push({ id: puzzle.id, shard: puzzle.catalogShard, themes: [...new Set(puzzle.themes)] });
+        }
+        feedback.textContent = 'Puzzle solved! Loading the next puzzle shortly...';
+        const themeLabels = puzzle.themes.map(id => {
+          const option = Array.from(themeSelect.options).find(item => item.value === id);
+          return option ? option.textContent : id;
+        });
+        themeStatus.textContent = `Puzzle categories: ${themeLabels.join(', ')}`;
+      } else {
+        const reply = puzzle.solution[solutionIndex];
+        const replyMove = game.moves({ square: reply.slice(0, 2), verbose: true }).find(
+          option => option.from + option.to + (option.promotion || '') === reply
+        );
+        if (!replyMove) {
+          finished = true;
+          console.error('Invalid Lichess puzzle continuation:', puzzle.id, reply);
+          feedback.textContent = 'This puzzle has an invalid continuation. Please load another puzzle.';
+        } else {
+          game.move({ from: replyMove.from, to: replyMove.to, ...(replyMove.promotion ? { promotion: replyMove.promotion } : {}) });
+          playSound('move', .1);
+          solutionIndex++;
+          if (solutionIndex >= puzzle.solution.length) {
+            finished = true;
+            feedback.textContent = 'This puzzle has an incomplete solution. Please load another puzzle.';
+          } else {
+            feedback.textContent = `Correct. Opponent played ${replyMove.san}. Find the next move.`;
+          }
+        }
+      }
+      if (finished) stopPuzzleClock();
+      renderBoard();
+      saveStats();
+      if (finished) clearPuzzleSession();
+      else savePuzzleSession();
+      if (solved) nextPuzzleTimer = setTimeout(loadPuzzle, 2500);
+    }
+
+    function updateRating(solved) {
+      const previous = stats.rating;
+      const expected = 1 / (1 + 10 ** ((puzzle.rating - previous) / 400));
+      const points = Math.max(1, Math.round(96 * (solved ? 1 - expected : expected)));
+      stats.rating = solved ? Math.min(Number.MAX_SAFE_INTEGER, previous + points) : Math.max(0, previous - points);
+      const change = stats.rating - previous;
+      if (change !== 0) {
+        const history = stats.ratingHistory;
+        const time = Math.max(Date.now(), history.length ? history[history.length - 1].time : 0);
+        if (!history.length) history.push({ time, rating: previous });
+        history.push({ time, rating: stats.rating });
+      }
+      ratingChange.textContent = change === 0
+        ? `Rating unchanged (${solved ? 'maximum reached' : 'minimum 0'}).`
+        : `Rating ${change > 0 ? '+' : ''}${change}; now ${stats.rating.toLocaleString()}.`;
+    }
+
+    promotion.addEventListener('click', (event) => {
+      const choice = event.target.closest('[data-promotion]');
+      if (choice && pendingPromotion) playMove(pendingPromotion.from, pendingPromotion.to, choice.dataset.promotion);
+    });
+    function cancelPendingPromotion() {
+      if (!pendingPromotion) return;
+      const from = pendingPromotion.from;
+      pendingPromotion = null;
+      hintButton.disabled = finished;
+      promotion.hidden = true;
+      cancelPromotion.hidden = true;
+      feedback.textContent = 'Promotion cancelled. Choose a move.';
+      board.querySelector(`[data-square="${from}"]`)?.focus({ preventScroll: true });
+    }
+    cancelPromotion.addEventListener('click', cancelPendingPromotion);
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && pendingPromotion) cancelPendingPromotion();
+    });
+
+    async function loadCatalog() {
+      const base = new URL(puzzleStorageUrl.endsWith('/') ? puzzleStorageUrl : `${puzzleStorageUrl}/`);
+      if (base.protocol !== 'https:') throw new Error('Puzzle storage must use HTTPS.');
+      const response = await fetch(new URL('manifest.json', base));
+      if (!response.ok) throw new Error(`Puzzle storage returned HTTP ${response.status}.`);
+      const manifest = await response.json();
+      if (!manifest || manifest.version !== 1 || !Number.isSafeInteger(manifest.total) ||
+          manifest.total < 1 || !Array.isArray(manifest.shards) || !manifest.shards.length) {
+        throw new Error('The puzzle catalog manifest is invalid.');
+      }
+      const counts = Object.create(null);
+      const keys = new Set();
+      let total = 0;
+      for (const shard of manifest.shards) {
+        if (!shard || typeof shard.key !== 'string' ||
+            !/^datasets\/[a-f0-9]{32}\/part-\d{5}\.json$/.test(shard.key) ||
+            keys.has(shard.key) || !Number.isSafeInteger(shard.count) || shard.count < 1 ||
+            !shard.themes || typeof shard.themes !== 'object' || Array.isArray(shard.themes)) {
+          throw new Error('The puzzle catalog has an invalid shard.');
+        }
+        keys.add(shard.key);
+        total += shard.count;
+        for (const [theme, count] of Object.entries(shard.themes)) {
+          if (!/^[A-Za-z0-9]+$/.test(theme) || !Number.isSafeInteger(count) || count < 1 || count > shard.count) {
+            throw new Error('The puzzle catalog has an invalid category count.');
+          }
+          counts[theme] = (counts[theme] || 0) + count;
+        }
+      }
+      if (total !== manifest.total) throw new Error('The puzzle catalog count does not match its shards.');
+      catalogThemeCounts = counts;
+      catalog = { base, shards: manifest.shards, total };
+      renderCategoryProgress();
+      document.getElementById('puzzle-source-description').textContent =
+        `${total.toLocaleString()} Lichess puzzles are stored in the catalog. Puzzle numbers are derived from Lichess IDs and are not sequential. Stats stay in this browser.`;
+    }
+
+    async function loadStoredPuzzle() {
+      const theme = themeSelect.value;
+      const minimum = minimumRating.value === '' ? null : Number(minimumRating.value);
+      const total = theme ? catalogThemeCounts[theme] : catalog.total;
+      if (!total) throw new Error('No puzzles are available for this category.');
+      const candidates = catalog.shards.filter(item => !theme || item.themes[theme]);
+      let remaining = total;
+      let shard, record;
+      for (let attempt = 0; attempt < 8 && candidates.length; attempt++) {
+        let offset = Math.floor(Math.random() * remaining);
+        const index = candidates.findIndex(item => {
+          const count = theme ? item.themes[theme] : item.count;
+          if (offset < count) return true;
+          offset -= count;
+          return false;
+        });
+        if (index < 0) throw new Error('Unable to select a puzzle from the catalog.');
+        shard = candidates.splice(index, 1)[0];
+        remaining -= theme ? shard.themes[theme] : shard.count;
+        const response = await fetch(new URL(shard.key, catalog.base));
+        if (!response.ok) throw new Error(`Puzzle storage returned HTTP ${response.status}.`);
+        const records = await response.json();
+        if (!Array.isArray(records) || records.length !== shard.count) throw new Error('The puzzle data is incomplete.');
+        const matches = theme ? records.filter(item => Array.isArray(item[4]) && item[4].includes(theme)) : records;
+        if (matches.length !== (theme ? shard.themes[theme] : shard.count)) throw new Error('The puzzle category count is incorrect.');
+        if (minimum === null) {
+          record = matches[offset];
+          break;
+        }
+        const rated = matches.filter(item => Array.isArray(item) && Number.isFinite(item[3]) && item[3] >= minimum);
+        if (rated.length) {
+          record = rated[Math.floor(Math.random() * rated.length)];
+          break;
+        }
+      }
+      if (!record) throw new Error(candidates.length
+        ? 'No matching puzzle found yet. Try again or lower the minimum rating.'
+        : 'No puzzles are available for this minimum rating and category.');
+      if (!Array.isArray(record) || record.length !== 6 ||
+          typeof record[0] !== 'string' || !/^[0-9A-Za-z]{1,32}$/.test(record[0]) ||
+          typeof record[1] !== 'string' || !Array.isArray(record[2]) || record[2].length < 2 ||
+          !record[2].every(move => typeof move === 'string' && /^[a-h][1-8][a-h][1-8][qrbn]?$/.test(move)) ||
+          !Number.isFinite(record[3]) || !Array.isArray(record[4]) ||
+          !record[4].every(value => typeof value === 'string') ||
+          typeof record[5] !== 'string' || !/^[0-9A-Za-z]{8}$/.test(record[5])) {
+        throw new Error('The puzzle data is in an unsupported format.');
+      }
+      const position = new Chess(record[1]);
+      const first = record[2][0];
+      position.move({ from: first.slice(0, 2), to: first.slice(2, 4), ...(first[4] ? { promotion: first[4] } : {}) });
+      return {
+        puzzle: { id: record[0], fen: position.fen(), solution: record[2].slice(1), rating: record[3], themes: record[4], catalogShard: shard.key },
+        game: { id: record[5] }
+      };
+    }
+
+    function showUnavailableBoard(message) {
+      hintButton.disabled = true;
+      const notice = document.createElement('span');
+      notice.className = 'board-message';
+      notice.textContent = message;
+      board.replaceChildren(notice);
+      board.classList.add('unavailable');
+      document.getElementById('puzzle-number').textContent = 'No puzzle loaded';
+      document.getElementById('turn').textContent = 'Waiting for puzzle';
+      document.getElementById('puzzle-rating').textContent = '';
+      return notice;
+    }
+
+    function waitForRateLimit(retryAfter) {
+      let serverDelay = 0;
+      if (retryAfter && /^\d+$/.test(retryAfter)) {
+        const seconds = Number(retryAfter);
+        if (Number.isSafeInteger(seconds)) serverDelay = seconds;
+      } else if (retryAfter) {
+        const retryDate = Date.parse(retryAfter);
+        if (Number.isFinite(retryDate)) serverDelay = Math.max(0, Math.ceil((retryDate - Date.now()) / 1000));
+      }
+      rateLimitDelay = Math.min(rateLimitDelay ? rateLimitDelay * 2 : 60, 300);
+      const seconds = Math.max(rateLimitDelay, serverDelay);
+      const retryAt = Math.min(Number.MAX_SAFE_INTEGER, Date.now() + seconds * 1000);
+      const notice = showUnavailableBoard('Lichess is temporarily limiting requests.');
+      feedback.textContent = 'Lichess is temporarily limiting requests. The site will retry automatically when the wait is over.';
+      function updateCountdown() {
+        const remaining = Math.ceil((retryAt - Date.now()) / 1000);
+        if (remaining <= 0) {
+          clearInterval(rateLimitTimer);
+          rateLimitTimer = undefined;
+          loadPuzzle();
+          return;
+        }
+        notice.textContent = `Lichess is temporarily limiting requests. Retrying in ${remaining}s.`;
+        nextButton.textContent = `Retrying in ${remaining}s`;
+      }
+      rateLimitTimer = setInterval(updateCountdown, 1000);
+      updateCountdown();
+    }
+
+    function validPuzzleData(value) {
+      return value && typeof value.id === 'string' && /^[0-9A-Za-z]{1,32}$/.test(value.id) &&
+        Array.isArray(value.solution) && value.solution.length > 0 &&
+        value.solution.every(move => typeof move === 'string' && /^[a-h][1-8][a-h][1-8][qrbn]?$/.test(move)) &&
+        Number.isFinite(value.rating) && Array.isArray(value.themes) &&
+        value.themes.every(theme => typeof theme === 'string');
+    }
+
+    function reportPuzzleSessionError(error) {
+      console.error('Unable to save or restore the current puzzle:', error);
+      puzzleSessionStatus.textContent = 'The current puzzle could not be saved or restored in this tab.';
+      puzzleSessionAvailable = false;
+    }
+
+    function clearPuzzleSession() {
+      if (!puzzleSessionAvailable) return;
+      try {
+        sessionStorage.removeItem(puzzleSessionKey);
+      } catch (error) {
+        reportPuzzleSessionError(error);
+      }
+    }
+
+    function savePuzzleSession() {
+      if (!puzzleSessionAvailable || finished || puzzleStartedAt === undefined) return;
+      try {
+        sessionStorage.setItem(puzzleSessionKey, JSON.stringify({
+          version: 1, puzzle, source: puzzleSource, solutionIndex, puzzleHadWrongMove,
+          puzzleFailureAnalysis, reasonFormOpen: !reasonForm.hidden,
+          elapsed: Math.max(0, performance.now() - puzzleStartedAt),
+          theme: themeSelect.value, minimum: puzzleMinimum
+        }));
+      } catch (error) {
+        reportPuzzleSessionError(error);
+      }
+    }
+
+    function renderCurrentPuzzle() {
+      document.getElementById('puzzle-number').textContent = `Puzzle #${puzzleNumber(puzzle.id)} · Lichess ${puzzle.id}`;
+      document.getElementById('turn').textContent = `${playerColor === 'w' ? 'White' : 'Black'} to move`;
+      document.getElementById('puzzle-rating').textContent = `Puzzle difficulty: ${puzzle.rating}`;
+      renderSourceGame(puzzleSource);
+      loadSourceGamePlayers(puzzleSource);
+      resetCommunity(puzzle.id);
+      communityForm.querySelector('button').disabled = false;
+      loadCommunity();
+      themeStatus.textContent = 'Themes are revealed after solving.';
+      renderBoard();
+    }
+
+    function restorePuzzleSession() {
+      let raw;
+      try {
+        raw = sessionStorage.getItem(puzzleSessionKey);
+      } catch (error) {
+        reportPuzzleSessionError(error);
+        return false;
+      }
+      if (raw === null) return false;
+      try {
+        const saved = JSON.parse(raw);
+        if (!saved || saved.version !== 1 || !validPuzzleData(saved.puzzle) ||
+            typeof saved.puzzle.fen !== 'string' ||
+            (saved.puzzle.catalogShard !== undefined && (typeof saved.puzzle.catalogShard !== 'string' ||
+              !/^datasets\/[a-f0-9]{32}\/part-\d{5}\.json$/.test(saved.puzzle.catalogShard))) ||
+            !Number.isSafeInteger(saved.solutionIndex) || saved.solutionIndex < 0 ||
+            saved.solutionIndex >= saved.puzzle.solution.length || saved.solutionIndex % 2 !== 0 ||
+            typeof saved.puzzleHadWrongMove !== 'boolean' ||
+            (saved.puzzleHadWrongMove ? !validFailureAnalysis(saved.puzzleFailureAnalysis) : saved.puzzleFailureAnalysis !== null) ||
+            typeof saved.reasonFormOpen !== 'boolean' || (saved.reasonFormOpen && !saved.puzzleHadWrongMove) ||
+            !Number.isFinite(saved.elapsed) || saved.elapsed < 0 || saved.elapsed > Number.MAX_SAFE_INTEGER ||
+            typeof saved.theme !== 'string' || (saved.theme !== '' && !/^[A-Za-z0-9]+$/.test(saved.theme)) ||
+            typeof saved.minimum !== 'string' || (saved.minimum !== '' &&
+              (!/^\d+$/.test(saved.minimum) || !Number.isSafeInteger(Number(saved.minimum)))) ||
+            (saved.source !== null && (typeof saved.source !== 'object' || Array.isArray(saved.source)))) {
+          throw new Error('Stored puzzle has an invalid format.');
+        }
+        const restoredGame = new Chess(saved.puzzle.fen);
+        const restoredColor = restoredGame.turn();
+        for (const uci of saved.puzzle.solution.slice(0, saved.solutionIndex)) {
+          restoredGame.move({ from: uci.slice(0, 2), to: uci.slice(2, 4), ...(uci[4] ? { promotion: uci[4] } : {}) });
+        }
+        const nextMove = saved.puzzle.solution[saved.solutionIndex];
+        if (restoredGame.turn() !== restoredColor || !restoredGame.moves({ verbose: true }).some(
+          move => move.from + move.to + (move.promotion || '') === nextMove
+        )) throw new Error('Stored puzzle has an invalid continuation.');
+        game = restoredGame;
+        puzzle = saved.puzzle;
+        puzzleSource = saved.source;
+        playerColor = restoredColor;
+        solutionIndex = saved.solutionIndex;
+        puzzleHadWrongMove = saved.puzzleHadWrongMove;
+        puzzleFailureAnalysis = saved.puzzleFailureAnalysis;
+        selected = null;
+        finished = false;
+        let restoredTheme = saved.theme;
+        if (restoredTheme && catalog && !Object.prototype.hasOwnProperty.call(catalogThemeCounts, restoredTheme)) {
+          restoredTheme = '';
+          puzzleSessionStatus.textContent = 'The saved category is no longer available; showing All themes.';
+        }
+        if (restoredTheme && !Array.from(themeSelect.options).some(option => option.value === restoredTheme)) {
+          themeSelect.add(new Option(restoredTheme, restoredTheme));
+        }
+        themeSelect.value = restoredTheme;
+        puzzleMinimum = saved.minimum;
+        minimumRating.value = saved.minimum;
+        reasonForm.hidden = !saved.reasonFormOpen;
+        if (puzzleFailureAnalysis) {
+          renderFailureScores(failureAnalysisList, puzzleFailureAnalysis);
+          failureAnalysis.hidden = false;
+        }
+        feedback.textContent = 'Puzzle restored. Continue where you left off.';
+        nextButton.disabled = false;
+        themeSelect.disabled = false;
+        minimumRating.disabled = !catalog;
+        applyRating.disabled = !catalog;
+        nextButton.textContent = 'New puzzle';
+        startPuzzleClock(saved.elapsed);
+        renderCurrentPuzzle();
+        renderCategoryProgress();
+        return true;
+      } catch (error) {
+        console.error('Unable to restore the current puzzle:', error);
+        puzzleSessionStatus.textContent = 'The saved puzzle could not be restored. Loading a new puzzle.';
+        return false;
+      }
+    }
+
+    window.addEventListener('pagehide', savePuzzleSession);
+
+    async function loadPuzzle() {
+      if (puzzleStorageUrl && !catalog) {
+        feedback.textContent = 'Puzzle storage is unavailable. Please reload the page.';
+        return;
+      }
+      if (catalog && (minimumRating.validity.badInput || !minimumRating.checkValidity() ||
+          (minimumRating.value !== '' && !Number.isSafeInteger(Number(minimumRating.value))))) {
+        feedback.textContent = 'Enter a whole number of 0 or higher for the minimum rating.';
+        minimumRating.focus();
+        return;
+      }
+      clearTimeout(nextPuzzleTimer);
+      nextPuzzleTimer = undefined;
+      clearPuzzleSession();
+      resetCommunity();
+      communityStatus.textContent = 'Loading puzzle…';
+      if (sourceGameRequest) {
+        sourceGameRequest.abort();
+        sourceGameRequest = undefined;
+      }
+      stopPuzzleClock();
+      puzzleTime.textContent = 'Time: —';
+      clearArrows();
+      hintSquare = null;
+      hintTarget = null;
+      board.querySelector('.hint')?.classList.remove('hint');
+      hintButton.disabled = true;
+      if (drag) endDrag({ pointerId: drag.pointerId }, true);
+      nextButton.disabled = true;
+      themeSelect.disabled = true;
+      minimumRating.disabled = true;
+      applyRating.disabled = true;
+      nextButton.textContent = 'Loading puzzle...';
+      feedback.textContent = 'Loading a puzzle from Lichess...';
+      ratingChange.textContent = '';
+      themeStatus.textContent = '';
+      reasonForm.hidden = true;
+      failureAnalysis.hidden = true;
+      failureAnalysisList.replaceChildren();
+      promotion.hidden = true;
+      cancelPromotion.hidden = true;
+      pendingPromotion = null;
+      finished = true;
+      sourceGame.hidden = true;
+      try {
+        let data;
+        if (catalog) {
+          data = await loadStoredPuzzle();
+        } else {
+          const url = new URL('https://lichess.org/api/puzzle/next');
+          if (themeSelect.value) url.searchParams.set('angle', themeSelect.value);
+          const response = await fetch(url);
+          if (response.status === 429) {
+            console.warn('Lichess is rate limiting puzzle requests; waiting before retrying.');
+            waitForRateLimit(response.headers.get('Retry-After'));
+            return;
+          }
+          if (!response.ok) throw new Error(`Lichess returned HTTP ${response.status}.`);
+          data = await response.json();
+        }
+        if (!validPuzzleData(data.puzzle)) {
+          throw new Error('Lichess returned a puzzle in an unsupported format.');
+        }
+        let loadedGame;
+        if (typeof data.puzzle.fen === 'string') {
+          loadedGame = new Chess(data.puzzle.fen);
+        } else {
+          if (!data.game || typeof data.game.pgn !== 'string' || !Number.isInteger(data.puzzle.initialPly)) {
+            throw new Error('The puzzle has no usable starting position.');
+          }
+          const recordedGame = new Chess();
+          recordedGame.loadPgn(data.game.pgn);
+          const moves = recordedGame.history();
+          const positionPly = data.puzzle.initialPly + 1;
+          if (positionPly < 1 || moves.length < positionPly) throw new Error('The puzzle game is incomplete.');
+          loadedGame = new Chess();
+          moves.slice(0, positionPly).forEach(move => loadedGame.move(move));
+        }
+        game = loadedGame;
+        rateLimitDelay = 0;
+        puzzle = { ...data.puzzle, fen: loadedGame.fen() };
+        puzzleSource = data.game ? { id: data.game.id, players: data.game.players } : null;
+        puzzleMinimum = minimumRating.value;
+        playerColor = game.turn();
+        selected = null;
+        solutionIndex = 0;
+        puzzleHadWrongMove = false;
+        puzzleFailureAnalysis = null;
+        finished = false;
+        feedback.textContent = 'Select a piece to begin.';
+        startPuzzleClock();
+        renderCurrentPuzzle();
+        savePuzzleSession();
+      } catch (error) {
+        console.error('Unable to load Lichess puzzle:', error);
+        feedback.textContent = `Could not load a puzzle: ${error.message}`;
+        showUnavailableBoard('Puzzle unavailable. Please try again.');
+      } finally {
+        if (rateLimitTimer === undefined) {
+          nextButton.disabled = false;
+          themeSelect.disabled = false;
+          minimumRating.disabled = !catalog;
+          applyRating.disabled = !catalog;
+          nextButton.textContent = 'New puzzle';
+        }
+      }
+    }
+
+    async function loadThemes() {
+      let themes = [];
+      function renderThemes(available) {
+        const selectedTheme = themeSelect.value;
+        themeSelect.replaceChildren(themeSelect.options[0]);
+        available.forEach(({ id, label }) => {
+          const option = document.createElement('option');
+          option.value = id;
+          option.textContent = catalog ? `${label} (${catalogThemeCounts[id].toLocaleString()})` : label;
+          themeSelect.appendChild(option);
+        });
+        if (selectedTheme) themeSelect.value = selectedTheme;
+        renderCategoryProgress();
+        renderTrainingInsights();
+      }
+      if (catalog) {
+        themeSelect.options[0].textContent = `All themes (${catalog.total.toLocaleString()})`;
+        renderThemes(Object.keys(catalogThemeCounts).sort().map(id => ({ id, label: id })));
+      }
+      try {
+        const response = await fetch('https://raw.githubusercontent.com/lichess-org/lila/master/translation/source/puzzleTheme.xml');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const xml = new DOMParser().parseFromString(await response.text(), 'application/xml');
+        if (xml.querySelector('parsererror')) throw new Error('Invalid theme list');
+        const excluded = new Set(['mix', 'playerGames', 'puzzleDownloadInformation', 'promotePawnToQueenRookOrMinor']);
+        themes = Array.from(xml.querySelectorAll('string[name]'))
+          .filter(item => !item.getAttribute('name').endsWith('Description') && !excluded.has(item.getAttribute('name')))
+          .map(item => ({ id: item.getAttribute('name'), label: item.textContent }))
+          .sort((a, b) => a.label.localeCompare(b.label));
+        if (!themes.length) throw new Error('No themes found');
+      } catch (error) {
+        console.error('Unable to load Lichess themes:', error);
+        document.getElementById('theme-error').textContent = catalog
+          ? 'Category names could not be loaded; showing their IDs instead.'
+          : 'Categories could not be loaded. You can still play mixed puzzles.';
+      }
+      if (catalog) {
+        const labels = new Map(themes.map(theme => [theme.id, theme.label]));
+        themes = Object.keys(catalogThemeCounts).map(id => ({ id, label: labels.get(id) || id }));
+        themes.sort((a, b) => a.label.localeCompare(b.label));
+      }
+      renderThemes(themes);
+    }
+
+    nextButton.addEventListener('click', loadPuzzle);
+    themeSelect.addEventListener('change', () => {
+      renderCategoryProgress();
+      loadPuzzle();
+    });
+    function revealNextMove() {
+      if (finished || pendingPromotion) return;
+      const uci = puzzle.solution[solutionIndex];
+      const move = game.moves({ square: uci.slice(0, 2), verbose: true }).find(
+        option => option.from + option.to + (option.promotion || '') === uci
+      );
+      if (!move) {
+        console.error('Invalid Lichess puzzle solution:', puzzle.id, uci);
+        feedback.textContent = 'The next move is unavailable for this puzzle. Please load another puzzle.';
+        return;
+      }
+      hintSquare = move.from;
+      hintTarget = move.to;
+      board.querySelectorAll('.hint, .hint-target').forEach(square => square.classList.remove('hint', 'hint-target'));
+      board.querySelector(`[data-square="${move.from}"]`).classList.add('hint');
+      board.querySelector(`[data-square="${move.to}"]`).classList.add('hint-target');
+      const promotionText = move.promotion ? ` and promote to a ${pieceNames[move.promotion]}` : '';
+      feedback.textContent = `Next move: ${pieceNames[move.piece]} from ${move.from} to ${move.to}${promotionText}.`;
+    }
+
+    hintButton.addEventListener('click', event => {
+      if (finished || pendingPromotion) return;
+      const square = puzzle.solution[solutionIndex].slice(0, 2);
+      if (event.detail === 3 || (event.detail === 0 && hintTarget)) {
+        hintSquare = null;
+        hintTarget = null;
+        board.querySelectorAll('.hint, .hint-target').forEach(item => item.classList.remove('hint', 'hint-target'));
+        feedback.textContent = 'Hint cleared.';
+        return;
+      }
+      if (event.detail === 0 && hintSquare === square && !hintTarget) {
+        revealNextMove();
+        return;
+      }
+      const piece = game.get(square);
+      if (!piece || piece.color !== playerColor) {
+        console.error('Invalid Lichess puzzle hint:', puzzle.id, square);
+        feedback.textContent = 'A hint is unavailable for this puzzle. Please load another puzzle.';
+        return;
+      }
+      board.querySelectorAll('.hint, .hint-target').forEach(item => item.classList.remove('hint', 'hint-target'));
+      hintSquare = square;
+      hintTarget = null;
+      board.querySelector(`[data-square="${square}"]`).classList.add('hint');
+      feedback.textContent = `Hint: move the ${pieceNames[piece.type]} on ${square}.`;
+    });
+    hintButton.addEventListener('dblclick', revealNextMove);
+    applyRating.addEventListener('click', loadPuzzle);
+    minimumRating.addEventListener('keydown', event => {
+      if (event.key === 'Enter') loadPuzzle();
+    });
+    try {
+      ({ Chess } = await import('https://cdn.jsdelivr.net/npm/chess.js@1.4.0/+esm'));
+      if (puzzleStorageUrl) await loadCatalog();
+      await Promise.all([loadThemes(), restorePuzzleSession() ? Promise.resolve() : loadPuzzle()]);
+    } catch (error) {
+      console.error('Unable to start puzzle training:', error);
+      feedback.textContent = `Could not start puzzle training: ${error.message}`;
+      showUnavailableBoard('Puzzle training unavailable. Please reload the page.');
+      nextButton.disabled = true;
+      themeSelect.disabled = true;
+    }
   </script>
 </body>
 </html>
